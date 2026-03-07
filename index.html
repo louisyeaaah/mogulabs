@@ -3,135 +3,1722 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vela - Legal</title>
+    <title>Vela — Your AI-Powered Health Companion</title>
+    <meta name="description" content="Vela combines Apple HealthKit data with AI coaching to deliver personalized workouts, nutrition plans, and recovery insights. Meet Avela, your intelligent health companion.">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
         :root {
-            --bg: #0e0e12;
-            --card: #1a1a24;
-            --card-hover: #22222e;
-            --border: rgba(255,255,255,0.06);
+            --bg: #050507;
+            --surface: #0a0a0f;
+            --card: rgba(255,255,255,0.03);
+            --card-border: rgba(255,255,255,0.06);
             --accent: #7c6ef0;
             --accent2: #e87e9a;
             --accent3: #56bfb5;
-            --text: #e8e6f0;
-            --text2: #9490a8;
-            --glow: rgba(124,110,240,0.15);
+            --accent4: #6ea8f0;
+            --text: #f5f5f7;
+            --text2: #86868b;
+            --text3: #6e6e73;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
             background: var(--bg);
             color: var(--text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ===== NAVBAR ===== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 48px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(5,5,7,0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: background 0.3s;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .nav-logo img {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+        }
+
+        .nav-logo span {
+            font-weight: 600;
+            font-size: 18px;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text2);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 400;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover { color: var(--text); }
+
+        .nav-cta {
+            background: var(--accent) !important;
+            color: white !important;
+            padding: 6px 16px;
+            border-radius: 980px;
+            font-weight: 500 !important;
+            font-size: 13px !important;
+            transition: opacity 0.2s !important;
+        }
+
+        .nav-cta:hover { opacity: 0.85; }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-        }
-        .hero {
             text-align: center;
-            padding: 80px 24px 40px;
+            padding: 120px 24px 80px;
+            overflow: hidden;
         }
-        .logo {
-            width: 80px; height: 80px;
-            background: linear-gradient(135deg, var(--accent), var(--accent2));
-            border-radius: 20px;
+
+        /* Ambient glow */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -40%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(124,110,240,0.15) 0%, rgba(232,126,154,0.08) 40%, transparent 70%);
+            pointer-events: none;
+            animation: heroGlow 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroGlow {
+            0% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+            100% { transform: translateX(-50%) scale(1.2); opacity: 1; }
+        }
+
+        .hero-badge {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            margin-bottom: 24px;
-            box-shadow: 0 8px 32px var(--glow);
+            gap: 8px;
+            padding: 6px 16px 6px 8px;
+            background: rgba(124,110,240,0.1);
+            border: 1px solid rgba(124,110,240,0.2);
+            border-radius: 980px;
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 32px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeUp 0.8s 0.2s forwards;
         }
+
+        .hero-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
         .hero h1 {
-            font-size: 40px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 0.8s 0.4s forwards;
         }
-        .hero p {
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientShift 5s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-sub {
+            font-size: clamp(18px, 2.5vw, 24px);
             color: var(--text2);
-            font-size: 17px;
+            max-width: 640px;
+            line-height: 1.5;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            margin-bottom: 48px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 0.8s 0.6s forwards;
         }
-        .cards {
+
+        .hero-buttons {
             display: flex;
-            gap: 20px;
-            padding: 20px 24px 80px;
-            max-width: 720px;
-            width: 100%;
+            gap: 16px;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 0.8s 0.8s forwards;
         }
-        .card {
-            flex: 1;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px 24px;
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            background: white;
+            color: #000;
+            border-radius: 980px;
+            font-size: 17px;
+            font-weight: 600;
             text-decoration: none;
-            color: var(--text);
-            transition: all 0.25s ease;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 40px rgba(255,255,255,0.15);
+        }
+
+        .btn-primary svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(124,110,240,0.3);
+            border-radius: 980px;
+            font-size: 17px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(124,110,240,0.08);
+            border-color: rgba(124,110,240,0.5);
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== PHONE MOCKUP ===== */
+        .hero-device {
+            position: relative;
+            margin-top: 80px;
+            opacity: 0;
+            transform: translateY(60px);
+            animation: fadeUp 1s 1s forwards;
+        }
+
+        .phone-frame {
+            position: relative;
+            width: 280px;
+            height: 580px;
+            background: linear-gradient(145deg, #1a1a2e, #0d0d1a);
+            border-radius: 44px;
+            border: 2px solid rgba(255,255,255,0.1);
+            padding: 12px;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.05),
+                0 20px 80px rgba(0,0,0,0.6),
+                0 0 120px rgba(124,110,240,0.1),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #0e0e1a 0%, #0a0a14 100%);
+            border-radius: 34px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 28px;
+            background: #000;
+            border-radius: 0 0 18px 18px;
+            z-index: 2;
+        }
+
+        .phone-content {
+            padding: 44px 16px 16px;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            gap: 12px;
+        }
+
+        .phone-greeting {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .phone-greeting span {
+            color: var(--text2);
+            font-size: 14px;
+            font-weight: 400;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .phone-score {
+            background: linear-gradient(135deg, rgba(124,110,240,0.15), rgba(86,191,181,0.1));
+            border: 1px solid rgba(124,110,240,0.15);
+            border-radius: 20px;
+            padding: 16px;
             text-align: center;
         }
-        .card:hover {
-            background: var(--card-hover);
-            border-color: var(--accent);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px var(--glow);
+
+        .phone-score-value {
+            font-size: 44px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent3), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
         }
-        .card-icon {
-            width: 56px; height: 56px;
+
+        .phone-score-label {
+            font-size: 12px;
+            color: var(--text2);
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .phone-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .phone-metric {
+            background: rgba(255,255,255,0.04);
+            border-radius: 12px;
+            padding: 10px 8px;
+            text-align: center;
+        }
+
+        .phone-metric-icon {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .phone-metric-val {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .phone-metric-label {
+            font-size: 9px;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .phone-card-mini {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .phone-card-mini-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .phone-card-mini-text h4 {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .phone-card-mini-text p {
+            font-size: 11px;
+            color: var(--text2);
+        }
+
+        /* Floating glows around device */
+        .device-glow {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        .device-glow-1 {
+            width: 300px;
+            height: 300px;
+            background: rgba(124,110,240,0.12);
+            top: 20%;
+            left: -100px;
+            animation: float1 6s ease-in-out infinite;
+        }
+
+        .device-glow-2 {
+            width: 250px;
+            height: 250px;
+            background: rgba(232,126,154,0.1);
+            bottom: 10%;
+            right: -80px;
+            animation: float2 7s ease-in-out infinite;
+        }
+
+        .device-glow-3 {
+            width: 200px;
+            height: 200px;
+            background: rgba(86,191,181,0.1);
+            top: 50%;
+            right: -60px;
+            animation: float3 5s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, -30px); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-15px, 20px); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(10px, -20px); }
+        }
+
+        /* ===== SCROLL REVEAL ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* ===== SECTION COMMON ===== */
+        section {
+            padding: 160px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: clamp(36px, 5vw, 64px);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+
+        .section-desc {
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--text2);
+            max-width: 560px;
+            line-height: 1.6;
+        }
+
+        /* ===== MARQUEE STRIP ===== */
+        .marquee-section {
+            padding: 0;
+            max-width: 100%;
+            overflow: hidden;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.01);
+        }
+
+        .marquee-track {
+            display: flex;
+            animation: marquee 30s linear infinite;
+            width: max-content;
+        }
+
+        .marquee-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 28px 48px;
+            white-space: nowrap;
+            color: var(--text3);
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .marquee-item span {
+            font-size: 20px;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ===== FEATURES BENTO GRID ===== */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto auto;
+            gap: 16px;
+            margin-top: 64px;
+        }
+
+        .bento-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 40px 32px;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .bento-card:hover {
+            border-color: rgba(124,110,240,0.2);
+            box-shadow: 0 8px 60px rgba(124,110,240,0.06);
+        }
+
+        .bento-card.large {
+            grid-column: span 2;
+        }
+
+        .bento-card-icon {
+            width: 48px;
+            height: 48px;
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        .bento-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .bento-card p {
+            font-size: 15px;
+            color: var(--text2);
+            line-height: 1.6;
+        }
+
+        /* Card accent glows */
+        .bento-card .card-glow {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            pointer-events: none;
+            right: -40px;
+            top: -40px;
+        }
+
+        /* ===== AVELA AI SECTION ===== */
+        .avela-section {
+            position: relative;
+            text-align: center;
+        }
+
+        .avela-section .section-desc {
+            margin: 0 auto 64px;
+        }
+
+        .avela-demo {
+            max-width: 680px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .avela-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avela-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .avela-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .avela-status {
+            font-size: 12px;
+            color: var(--accent3);
+        }
+
+        .avela-chat {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .chat-msg {
+            max-width: 85%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .chat-msg.user {
+            align-self: flex-end;
+            background: var(--accent);
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
+
+        .chat-msg.ai {
+            align-self: flex-start;
+            background: rgba(255,255,255,0.06);
+            border-bottom-left-radius: 6px;
+        }
+
+        .chat-msg.ai .typing {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .chat-msg.ai .typing span {
+            width: 6px;
+            height: 6px;
+            background: var(--text2);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .chat-msg.ai .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .chat-msg.ai .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.3; transform: scale(0.8); }
+            30% { opacity: 1; transform: scale(1); }
+        }
+
+        .avela-input {
+            padding: 16px 24px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avela-input-field {
+            flex: 1;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 980px;
+            padding: 10px 18px;
+            color: var(--text2);
+            font-size: 14px;
+        }
+
+        .avela-input-send {
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        /* ===== METRICS SECTION ===== */
+        .metrics-section .section-desc {
+            margin-bottom: 64px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card:hover {
+            border-color: rgba(124,110,240,0.15);
+            transform: translateY(-4px);
+        }
+
+        .metric-icon {
+            font-size: 28px;
             margin-bottom: 16px;
         }
-        .card-icon.privacy { background: rgba(86,191,181,0.15); }
-        .card-icon.terms { background: rgba(124,110,240,0.15); }
-        .card h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
-        .card p { font-size: 14px; color: var(--text2); line-height: 1.5; }
-        .card .arrow {
-            margin-top: 16px;
-            color: var(--accent);
-            font-size: 14px;
-            font-weight: 500;
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 4px;
         }
-        .footer {
-            color: var(--text2);
+
+        .metric-label {
             font-size: 13px;
-            padding-bottom: 40px;
+            color: var(--text2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        @media (max-width: 540px) {
-            .cards { flex-direction: column; }
-            .hero h1 { font-size: 32px; }
+
+        .metric-bar {
+            margin-top: 16px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255,255,255,0.06);
+            overflow: hidden;
+        }
+
+        .metric-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            width: 0;
+            transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .metric-card.active .metric-bar-fill {
+            width: var(--fill);
+        }
+
+        /* ===== LARGE FEATURE SECTION ===== */
+        .feature-showcase {
+            padding: 160px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-row {
+            display: flex;
+            align-items: center;
+            gap: 80px;
+            margin-bottom: 160px;
+        }
+
+        .feature-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .feature-row.reverse {
+            flex-direction: row-reverse;
+        }
+
+        .feature-text {
+            flex: 1;
+        }
+
+        .feature-visual {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .feature-number {
+            font-size: 80px;
+            font-weight: 900;
+            -webkit-text-stroke: 1px rgba(124,110,240,0.3);
+            color: transparent;
+            line-height: 1;
+            margin-bottom: 20px;
+        }
+
+        .feature-text h3 {
+            font-size: clamp(28px, 3vw, 40px);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 16px;
+            line-height: 1.15;
+        }
+
+        .feature-text p {
+            font-size: 17px;
+            color: var(--text2);
+            line-height: 1.7;
+        }
+
+        .feature-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        .feature-tag {
+            padding: 6px 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 980px;
+            font-size: 13px;
+            color: var(--text2);
+        }
+
+        /* Visual cards in feature sections */
+        .visual-card {
+            width: 320px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 24px;
+            padding: 32px;
+            position: relative;
+        }
+
+        .visual-ring {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visual-ring svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .visual-ring svg circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+        }
+
+        .visual-ring svg circle.bg {
+            stroke: rgba(255,255,255,0.04);
+        }
+
+        .visual-ring svg circle.fill-ring {
+            stroke-dasharray: 502;
+            stroke-dashoffset: 502;
+            transition: stroke-dashoffset 2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .visual-ring.active svg circle.fill-ring {
+            stroke-dashoffset: var(--offset);
+        }
+
+        .visual-ring-value {
+            font-size: 48px;
+            font-weight: 800;
+            z-index: 1;
+        }
+
+        .visual-ring-label {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text2);
+        }
+
+        /* Sleep visual */
+        .sleep-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            height: 140px;
+            padding: 0 16px;
+            margin-bottom: 24px;
+        }
+
+        .sleep-bar {
+            flex: 1;
+            border-radius: 6px 6px 0 0;
+            transition: height 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+            height: 0;
+        }
+
+        .sleep-bars.active .sleep-bar {
+            height: var(--h);
+        }
+
+        .sleep-days {
+            display: flex;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .sleep-days span {
+            font-size: 11px;
+            color: var(--text3);
+            flex: 1;
+            text-align: center;
+        }
+
+        /* ===== FULL-WIDTH STATEMENT ===== */
+        .statement {
+            padding: 200px 24px;
+            text-align: center;
+            position: relative;
+            max-width: 100%;
+        }
+
+        .statement::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(86,191,181,0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .statement h2 {
+            font-size: clamp(40px, 6vw, 80px);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .statement h2 em {
+            font-style: normal;
+            background: linear-gradient(135deg, var(--accent3), var(--accent4));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===== CTA SECTION ===== */
+        .cta-section {
+            text-align: center;
+            padding: 120px 24px 160px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            color: var(--text2);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .app-store-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: white;
+            color: #000;
+            border-radius: 14px;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .app-store-badge:hover {
+            transform: scale(1.03);
+        }
+
+        .app-store-badge svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .app-store-badge .badge-text {
+            text-align: left;
+        }
+
+        .app-store-badge .badge-text small {
+            font-size: 10px;
+            display: block;
+            opacity: 0.6;
+        }
+
+        .app-store-badge .badge-text strong {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 48px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-left img {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+        }
+
+        .footer-left span {
+            font-size: 14px;
+            color: var(--text2);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            font-size: 13px;
+            color: var(--text3);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text);
+        }
+
+        .footer-bottom {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text3);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .bento-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .bento-card.large {
+                grid-column: span 2;
+            }
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .feature-row, .feature-row.reverse {
+                flex-direction: column;
+                gap: 48px;
+            }
+            nav { padding: 0 20px; }
+        }
+
+        @media (max-width: 600px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+            .bento-card.large {
+                grid-column: span 1;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+                max-width: 320px;
+            }
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .footer-inner {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            .nav-links { display: none; }
+            .phone-frame {
+                width: 240px;
+                height: 500px;
+            }
+            section { padding: 100px 20px; }
+            .feature-showcase { padding: 100px 20px; }
+            .statement { padding: 120px 20px; }
+        }
+
+        /* ===== PARTICLES ===== */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(124,110,240,0.3);
+            border-radius: 50%;
+        }
+
+        /* Horizontal rule divider */
+        .divider {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
         }
     </style>
 </head>
 <body>
-    <div class="hero">
-        <div class="logo">V</div>
-        <h1>Vela</h1>
-        <p>Legal Information</p>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="nav-logo">
+            <img src="appicon.png" alt="Vela">
+            <span>Vela</span>
+        </a>
+        <div class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#avela">Avela AI</a>
+            <a href="#health">Health</a>
+            <a href="#download">Download</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="terms.html">Terms</a>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-badge">
+            <div class="hero-badge-dot"></div>
+            Powered by Apple HealthKit & AI
+        </div>
+
+        <h1>
+            Your health.<br>
+            <span class="gradient-text">Intelligently decoded.</span>
+        </h1>
+
+        <p class="hero-sub">
+            Vela transforms your health data into personalized daily plans —
+            workouts, nutrition, and recovery — all guided by Avela, your AI coach.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="#download" class="btn-primary">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                Download on App Store
+            </a>
+            <a href="#features" class="btn-secondary">
+                Explore Features
+            </a>
+        </div>
+
+        <!-- Phone Mockup -->
+        <div class="hero-device">
+            <div class="device-glow device-glow-1"></div>
+            <div class="device-glow device-glow-2"></div>
+            <div class="device-glow device-glow-3"></div>
+
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <div class="phone-content">
+                        <div class="phone-greeting">
+                            Good Morning
+                            <span>Here's your day at a glance</span>
+                        </div>
+                        <div class="phone-score">
+                            <div class="phone-score-value">87</div>
+                            <div class="phone-score-label">Readiness Score</div>
+                        </div>
+                        <div class="phone-metrics">
+                            <div class="phone-metric">
+                                <div class="phone-metric-icon" style="color: #e87e9a;">&#9829;</div>
+                                <div class="phone-metric-val" style="color: #e87e9a;">62</div>
+                                <div class="phone-metric-label">RHR</div>
+                            </div>
+                            <div class="phone-metric">
+                                <div class="phone-metric-icon" style="color: #56bfb5;">&#9649;</div>
+                                <div class="phone-metric-val" style="color: #56bfb5;">48ms</div>
+                                <div class="phone-metric-label">HRV</div>
+                            </div>
+                            <div class="phone-metric">
+                                <div class="phone-metric-icon" style="color: #7c6ef0;">&#9790;</div>
+                                <div class="phone-metric-val" style="color: #7c6ef0;">7.5h</div>
+                                <div class="phone-metric-label">Sleep</div>
+                            </div>
+                        </div>
+                        <div class="phone-card-mini">
+                            <div class="phone-card-mini-icon" style="background: rgba(124,110,240,0.12); color: var(--accent);">&#9889;</div>
+                            <div class="phone-card-mini-text">
+                                <h4>Upper Body Strength</h4>
+                                <p>45 min &middot; Moderate intensity</p>
+                            </div>
+                        </div>
+                        <div class="phone-card-mini">
+                            <div class="phone-card-mini-icon" style="background: rgba(86,191,181,0.12); color: var(--accent3);">&#127811;</div>
+                            <div class="phone-card-mini-text">
+                                <h4>Nutrition Plan</h4>
+                                <p>2,400 kcal &middot; 160g protein</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Marquee Strip -->
+    <div class="marquee-section">
+        <div class="marquee-track">
+            <div class="marquee-item"><span>&#9829;</span> Heart Rate Variability</div>
+            <div class="marquee-item"><span>&#9790;</span> Sleep Analysis</div>
+            <div class="marquee-item"><span>&#9889;</span> Workout Plans</div>
+            <div class="marquee-item"><span>&#127811;</span> Nutrition Tracking</div>
+            <div class="marquee-item"><span>&#10024;</span> AI Coaching</div>
+            <div class="marquee-item"><span>&#128200;</span> Trend Analysis</div>
+            <div class="marquee-item"><span>&#127919;</span> Readiness Score</div>
+            <div class="marquee-item"><span>&#128170;</span> Recovery Metrics</div>
+            <div class="marquee-item"><span>&#129504;</span> Body Composition</div>
+            <div class="marquee-item"><span>&#9829;</span> Heart Rate Variability</div>
+            <div class="marquee-item"><span>&#9790;</span> Sleep Analysis</div>
+            <div class="marquee-item"><span>&#9889;</span> Workout Plans</div>
+            <div class="marquee-item"><span>&#127811;</span> Nutrition Tracking</div>
+            <div class="marquee-item"><span>&#10024;</span> AI Coaching</div>
+            <div class="marquee-item"><span>&#128200;</span> Trend Analysis</div>
+            <div class="marquee-item"><span>&#127919;</span> Readiness Score</div>
+            <div class="marquee-item"><span>&#128170;</span> Recovery Metrics</div>
+            <div class="marquee-item"><span>&#129504;</span> Body Composition</div>
+        </div>
     </div>
 
-    <div class="cards">
-        <a class="card" href="privacy.html">
-            <div class="card-icon privacy">&#128737;</div>
-            <h2>Privacy Policy</h2>
-            <p>Learn how Vela handles your data, HealthKit integration, and third-party services.</p>
-            <span class="arrow">Read More &rarr;</span>
-        </a>
-        <a class="card" href="terms.html">
-            <div class="card-icon terms">&#9878;</div>
-            <h2>Terms of Use</h2>
-            <p>Review the terms governing your use of Vela, AI content, and subscriptions.</p>
-            <span class="arrow">Read More &rarr;</span>
-        </a>
+    <!-- Features Bento Grid -->
+    <section id="features">
+        <div class="reveal">
+            <div class="section-label" style="color: var(--accent);">Features</div>
+            <div class="section-title">Everything you need.<br>Nothing you don't.</div>
+            <div class="section-desc">Six powerful modules working together to give you a complete picture of your health and fitness journey.</div>
+        </div>
+
+        <div class="bento-grid">
+            <div class="bento-card large reveal reveal-delay-1">
+                <div class="card-glow" style="background: rgba(124,110,240,0.15);"></div>
+                <div class="bento-card-icon" style="background: rgba(124,110,240,0.12); color: var(--accent);">&#10024;</div>
+                <h3>Avela AI Coach</h3>
+                <p>Your personal AI health companion. Get real-time coaching, personalized briefings, and intelligent insights based on your unique health profile. Powered by on-device Apple Intelligence or cloud AI.</p>
+            </div>
+            <div class="bento-card reveal reveal-delay-2">
+                <div class="card-glow" style="background: rgba(86,191,181,0.15);"></div>
+                <div class="bento-card-icon" style="background: rgba(86,191,181,0.12); color: var(--accent3);">&#127919;</div>
+                <h3>Readiness Score</h3>
+                <p>Know exactly how ready your body is each morning. Built from sleep, HRV, resting heart rate, and recovery data.</p>
+            </div>
+            <div class="bento-card reveal reveal-delay-1">
+                <div class="card-glow" style="background: rgba(232,126,154,0.15);"></div>
+                <div class="bento-card-icon" style="background: rgba(232,126,154,0.12); color: var(--accent2);">&#9829;</div>
+                <h3>Recovery Monitoring</h3>
+                <p>Track your recovery in real-time with HRV trends, resting heart rate analysis, and component-level scoring.</p>
+            </div>
+            <div class="bento-card reveal reveal-delay-2">
+                <div class="card-glow" style="background: rgba(110,168,240,0.15);"></div>
+                <div class="bento-card-icon" style="background: rgba(110,168,240,0.12); color: var(--accent4);">&#9889;</div>
+                <h3>Smart Workouts</h3>
+                <p>AI-generated workout plans that adapt to your fitness level, goals, and current readiness. Strength, cardio, HIIT, mobility — all personalized.</p>
+            </div>
+            <div class="bento-card large reveal reveal-delay-3">
+                <div class="card-glow" style="background: rgba(86,191,181,0.15);"></div>
+                <div class="bento-card-icon" style="background: rgba(86,191,181,0.12); color: var(--accent3);">&#9790;</div>
+                <h3>Deep Sleep Insights</h3>
+                <p>Go beyond hours in bed. Vela analyzes sleep efficiency, quality scores, and patterns to help you understand and improve your rest. See how your sleep directly impacts your readiness and recovery.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Statement -->
+    <div class="statement reveal">
+        <h2>Health data is complex.<br>Your daily plan <em>shouldn't be</em>.</h2>
     </div>
 
-    <div class="footer">Last updated: March 2026</div>
+    <div class="divider"></div>
+
+    <!-- Feature Showcases -->
+    <div class="feature-showcase" id="health">
+        <!-- Readiness -->
+        <div class="feature-row">
+            <div class="feature-text reveal">
+                <div class="feature-number">01</div>
+                <div class="section-label" style="color: var(--accent3);">Readiness</div>
+                <h3>Start every day with clarity</h3>
+                <p>Your Readiness Score synthesizes sleep quality, heart rate variability, resting heart rate, and recovery into a single, actionable number. Green means go hard. Yellow means train smart. Red means rest and recover.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">HRV Analysis</span>
+                    <span class="feature-tag">Sleep Quality</span>
+                    <span class="feature-tag">Recovery Status</span>
+                    <span class="feature-tag">RHR Trends</span>
+                </div>
+            </div>
+            <div class="feature-visual reveal reveal-delay-2">
+                <div class="visual-card">
+                    <div class="visual-ring" data-value="87">
+                        <svg viewBox="0 0 180 180">
+                            <circle class="bg" cx="90" cy="90" r="80"/>
+                            <circle class="fill-ring" cx="90" cy="90" r="80" stroke="url(#grad1)" style="--offset: 67;"/>
+                        </svg>
+                        <defs hidden>
+                            <svg><defs>
+                                <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#56bfb5"/>
+                                    <stop offset="100%" style="stop-color:#7c6ef0"/>
+                                </linearGradient>
+                            </defs></svg>
+                        </defs>
+                        <div class="visual-ring-value" style="color: var(--accent3);">87</div>
+                    </div>
+                    <div class="visual-ring-label">Your body is ready to perform</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep -->
+        <div class="feature-row reverse">
+            <div class="feature-text reveal">
+                <div class="feature-number">02</div>
+                <div class="section-label" style="color: var(--accent4);">Sleep</div>
+                <h3>Unlock the power of rest</h3>
+                <p>See your sleep architecture come alive. Duration, efficiency, quality score, and weekly trends — all visualized to help you build the habits that lead to deeper, more restorative sleep.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">Sleep Duration</span>
+                    <span class="feature-tag">Quality Score</span>
+                    <span class="feature-tag">Efficiency</span>
+                    <span class="feature-tag">Weekly Trends</span>
+                </div>
+            </div>
+            <div class="feature-visual reveal reveal-delay-2">
+                <div class="visual-card">
+                    <div class="sleep-bars" data-animate>
+                        <div class="sleep-bar" style="--h: 75%; background: linear-gradient(to top, rgba(110,168,240,0.3), rgba(110,168,240,0.8));"></div>
+                        <div class="sleep-bar" style="--h: 90%; background: linear-gradient(to top, rgba(110,168,240,0.3), rgba(110,168,240,0.8));"></div>
+                        <div class="sleep-bar" style="--h: 60%; background: linear-gradient(to top, rgba(232,126,154,0.3), rgba(232,126,154,0.6));"></div>
+                        <div class="sleep-bar" style="--h: 85%; background: linear-gradient(to top, rgba(110,168,240,0.3), rgba(110,168,240,0.8));"></div>
+                        <div class="sleep-bar" style="--h: 95%; background: linear-gradient(to top, rgba(86,191,181,0.3), rgba(86,191,181,0.8));"></div>
+                        <div class="sleep-bar" style="--h: 70%; background: linear-gradient(to top, rgba(110,168,240,0.3), rgba(110,168,240,0.8));"></div>
+                        <div class="sleep-bar" style="--h: 88%; background: linear-gradient(to top, rgba(110,168,240,0.3), rgba(110,168,240,0.8));"></div>
+                    </div>
+                    <div class="sleep-days">
+                        <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+                    </div>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <div style="font-size: 32px; font-weight: 800; color: var(--accent4);">7h 32m</div>
+                        <div style="font-size: 13px; color: var(--text2);">Weekly Average</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daily Plan -->
+        <div class="feature-row">
+            <div class="feature-text reveal">
+                <div class="feature-number">03</div>
+                <div class="section-label" style="color: var(--accent2);">Daily Plan</div>
+                <h3>One plan. Perfectly yours.</h3>
+                <p>Every morning, Vela generates a complete daily plan tailored to your current state. Workouts calibrated to your readiness, nutrition matched to your goals, and daily habits to keep you on track.</p>
+                <div class="feature-tags">
+                    <span class="feature-tag">Workouts</span>
+                    <span class="feature-tag">Nutrition</span>
+                    <span class="feature-tag">Daily Habits</span>
+                    <span class="feature-tag">Macro Tracking</span>
+                </div>
+            </div>
+            <div class="feature-visual reveal reveal-delay-2">
+                <div class="visual-card">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="background: rgba(124,110,240,0.08); border: 1px solid rgba(124,110,240,0.15); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(124,110,240,0.15); display: flex; align-items: center; justify-content: center; font-size: 20px;">&#128170;</div>
+                            <div>
+                                <div style="font-weight: 600; font-size: 14px;">Push Day — Chest & Shoulders</div>
+                                <div style="font-size: 12px; color: var(--text2);">50 min &middot; High Intensity</div>
+                            </div>
+                        </div>
+                        <div style="background: rgba(86,191,181,0.08); border: 1px solid rgba(86,191,181,0.15); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(86,191,181,0.15); display: flex; align-items: center; justify-content: center; font-size: 20px;">&#127811;</div>
+                            <div>
+                                <div style="font-weight: 600; font-size: 14px;">High Protein Meal Plan</div>
+                                <div style="font-size: 12px; color: var(--text2);">2,400 kcal &middot; P 160g &middot; C 280g &middot; F 75g</div>
+                            </div>
+                        </div>
+                        <div style="background: rgba(232,126,154,0.08); border: 1px solid rgba(232,126,154,0.15); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 40px; height: 40px; border-radius: 12px; background: rgba(232,126,154,0.15); display: flex; align-items: center; justify-content: center; font-size: 20px;">&#10004;</div>
+                            <div>
+                                <div style="font-weight: 600; font-size: 14px;">Daily Habits</div>
+                                <div style="font-size: 12px; color: var(--text2);">3 of 5 completed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Avela AI Section -->
+    <section class="avela-section" id="avela">
+        <div class="reveal">
+            <div class="section-label" style="color: var(--accent2);">Meet Avela</div>
+            <div class="section-title">Your AI coach.<br>Always on. Always learning.</div>
+            <div class="section-desc">Avela understands your health data, your goals, and your life. Ask anything — from workout advice to recovery strategies — and get intelligent, personalized responses.</div>
+        </div>
+
+        <div class="avela-demo reveal reveal-delay-2">
+            <div class="avela-header">
+                <div class="avela-avatar">&#10024;</div>
+                <div>
+                    <div class="avela-name">Avela</div>
+                    <div class="avela-status">Online &middot; Analyzing your data</div>
+                </div>
+            </div>
+            <div class="avela-chat">
+                <div class="chat-msg user">How's my recovery looking today?</div>
+                <div class="chat-msg ai">Your recovery is strong at 82%. HRV is trending up — 48ms vs your 7-day average of 42ms. Resting heart rate is 62 bpm, well within your optimal range. You're clear for a high-intensity session today.</div>
+                <div class="chat-msg user">Should I do legs or upper body?</div>
+                <div class="chat-msg ai">Based on your training log, you did upper body 2 days ago and haven't trained legs since Thursday. I'd recommend a lower body session — your recovery supports it, and it fits your push-pull-legs cycle. I've prepared a 50-minute plan for you.</div>
+            </div>
+            <div class="avela-input">
+                <div class="avela-input-field">Ask Avela anything...</div>
+                <div class="avela-input-send">&#8593;</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Health Metrics -->
+    <section class="metrics-section">
+        <div class="reveal">
+            <div class="section-label" style="color: var(--accent3);">Health Dashboard</div>
+            <div class="section-title">Your vitals.<br>Beautifully tracked.</div>
+            <div class="section-desc">Every heartbeat, every breath, every moment of rest — captured and analyzed to give you a deeper understanding of your body.</div>
+        </div>
+
+        <div class="metrics-grid" style="margin-top: 64px;">
+            <div class="metric-card reveal reveal-delay-1">
+                <div class="metric-icon" style="color: var(--accent2);">&#9829;</div>
+                <div class="metric-value" style="color: var(--accent2);">62</div>
+                <div class="metric-label">Resting HR</div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill" style="--fill: 62%; background: linear-gradient(90deg, var(--accent2), rgba(232,126,154,0.4));"></div>
+                </div>
+            </div>
+            <div class="metric-card reveal reveal-delay-2">
+                <div class="metric-icon" style="color: var(--accent3);">&#9649;</div>
+                <div class="metric-value" style="color: var(--accent3);">48<small style="font-size:16px">ms</small></div>
+                <div class="metric-label">HRV</div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill" style="--fill: 72%; background: linear-gradient(90deg, var(--accent3), rgba(86,191,181,0.4));"></div>
+                </div>
+            </div>
+            <div class="metric-card reveal reveal-delay-3">
+                <div class="metric-icon" style="color: var(--accent4);">&#127748;</div>
+                <div class="metric-value" style="color: var(--accent4);">7.5<small style="font-size:16px">h</small></div>
+                <div class="metric-label">Sleep</div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill" style="--fill: 85%; background: linear-gradient(90deg, var(--accent4), rgba(110,168,240,0.4));"></div>
+                </div>
+            </div>
+            <div class="metric-card reveal reveal-delay-4">
+                <div class="metric-icon" style="color: var(--accent);">&#128293;</div>
+                <div class="metric-value" style="color: var(--accent);">520<small style="font-size:16px">cal</small></div>
+                <div class="metric-label">Burned</div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill" style="--fill: 65%; background: linear-gradient(90deg, var(--accent), rgba(124,110,240,0.4));"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Second Statement -->
+    <div class="statement reveal">
+        <h2>Built for people who take their health <em>seriously</em>.</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="download">
+        <div class="reveal">
+            <h2>Ready to transform<br>your health journey?</h2>
+            <p>Download Vela and meet Avela, your AI-powered health companion. Free to start — unlock the full experience with Pro.</p>
+        </div>
+        <div class="cta-buttons reveal reveal-delay-2">
+            <a href="#" class="app-store-badge">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                <div class="badge-text">
+                    <small>Download on the</small>
+                    <strong>App Store</strong>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-left">
+                <img src="appicon.png" alt="Vela">
+                <span>&copy; 2026 Vela. All rights reserved.</span>
+            </div>
+            <div class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Use</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            Apple, the Apple logo, iPhone, and HealthKit are trademarks of Apple Inc.
+        </div>
+    </footer>
+
+    <!-- SVG Gradients -->
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#56bfb5"/>
+                <stop offset="100%" style="stop-color:#7c6ef0"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
+    <script>
+        // ===== Scroll Reveal =====
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+        document.querySelectorAll('.reveal, .visual-ring, .sleep-bars, .metric-card').forEach(el => {
+            observer.observe(el);
+        });
+
+        // ===== Particles =====
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 40;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.width = (Math.random() * 2 + 1) + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.opacity = Math.random() * 0.4 + 0.1;
+            particle.style.animation = `particleFloat ${Math.random() * 10 + 10}s linear infinite`;
+            particle.style.animationDelay = `-${Math.random() * 10}s`;
+            particlesContainer.appendChild(particle);
+        }
+
+        // Add particle animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes particleFloat {
+                0% { transform: translate(0, 0) scale(1); opacity: 0; }
+                10% { opacity: var(--particle-opacity, 0.3); }
+                90% { opacity: var(--particle-opacity, 0.3); }
+                100% { transform: translate(${Math.random() > 0.5 ? '' : '-'}${Math.random() * 200}px, -${Math.random() * 600 + 400}px) scale(0.5); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ===== Parallax on Scroll =====
+        const hero = document.querySelector('.hero-device');
+        let ticking = false;
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const scrolled = window.scrollY;
+                    if (hero && scrolled < window.innerHeight) {
+                        hero.style.transform = `translateY(${scrolled * 0.15}px)`;
+                    }
+                    // Navbar background
+                    const nav = document.querySelector('nav');
+                    if (scrolled > 50) {
+                        nav.style.background = 'rgba(5,5,7,0.92)';
+                    } else {
+                        nav.style.background = 'rgba(5,5,7,0.72)';
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // ===== Smooth scroll for anchor links =====
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
