@@ -455,10 +455,10 @@
     <div class="sticky-section" id="stickySection">
         <div class="sticky-container">
             <div class="sticky-content">
-                <div class="sticky-word" data-start="0" data-end="0.25">Speak like you <span class="highlight">think.</span></div>
-                <div class="sticky-word" data-start="0.25" data-end="0.5">AI removes the <span class="highlight">ums and ahs.</span></div>
-                <div class="sticky-word" data-start="0.5" data-end="0.75">Get text that's <span class="highlight">perfectly formatted.</span></div>
-                <div class="sticky-word" data-start="0.75" data-end="1.0">In <span class="highlight">any language</span> you speak.</div>
+                <div class="sticky-word" data-start="0.05" data-end="0.3">Speak like you <span class="highlight">think.</span></div>
+                <div class="sticky-word" data-start="0.3" data-end="0.5">AI removes the <span class="highlight">ums and ahs.</span></div>
+                <div class="sticky-word" data-start="0.5" data-end="0.7">Get text that's <span class="highlight">perfectly formatted.</span></div>
+                <div class="sticky-word" data-start="0.7" data-end="0.95">In <span class="highlight">any language</span> you speak.</div>
             </div>
         </div>
     </div>
@@ -606,13 +606,15 @@
         }, { threshold: 0.15 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-        // Sticky scroll text
+        // Sticky scroll text — start when section enters viewport
         const stickySection = document.getElementById('stickySection');
         const stickyWords = stickySection.querySelectorAll('.sticky-word');
         window.addEventListener('scroll', () => {
             const rect = stickySection.getBoundingClientRect();
-            const total = stickySection.offsetHeight - window.innerHeight;
-            const progress = Math.max(0, Math.min(1, -rect.top / total));
+            const vh = window.innerHeight;
+            // Progress 0 = section bottom edge enters viewport, 1 = section fully scrolled past
+            const totalTravel = stickySection.offsetHeight;
+            const progress = Math.max(0, Math.min(1, (vh - rect.top) / totalTravel));
             stickyWords.forEach(w => {
                 const s = parseFloat(w.dataset.start);
                 const e = parseFloat(w.dataset.end);
