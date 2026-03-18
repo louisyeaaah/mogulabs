@@ -8,13 +8,13 @@ on:
     branches: [main]
     paths-ignore:
       - 'public/data/**'
+      - 'marketplace/**'
 
 jobs:
   collect-and-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pages: write
 
     steps:
       - uses: actions/checkout@v4
@@ -31,36 +31,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Commit data changes
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/data/marketplaces.json
-          if git diff --cached --quiet; then
-            echo "No data changes, skipping commit"
-          else
-            git commit -m "chore: update marketplace data [skip ci]"
-            git push
-          fi
-
       - name: Build site
         run: npm run build
 
-      - name: Prepare deployment
+      - name: Commit changes to main
         run: |
-          mkdir -p deploy/marketplace
-          # Copy existing static files
-          cp index.html deploy/
-          cp CNAME deploy/
-          cp .nojekyll deploy/
-          cp -r tap deploy/
-          cp -r vela deploy/
-          cp -r .well-known deploy/
-          # Copy built marketplace app
-          cp -r dist/* deploy/marketplace/
+          # Copy build output to marketplace/ directory
+          rm -rf marketplace
+          mkdir -p marketplace
+          cp -r dist/* marketplace/
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./deploy
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add public/data/marketplaces.json marketplace/
+          if git diff --cached --quiet; then
+            echo "No changes, skipping commit"
+          else
+            git commit -m "chore: update marketplace data & build [skip ci]"
+            git push
+          fi
