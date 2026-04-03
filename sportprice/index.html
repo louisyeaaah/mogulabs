@@ -25,14 +25,13 @@
 
         html {
             scroll-behavior: smooth;
-            overflow-x: hidden;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
             background: var(--bg);
             color: var(--text);
-            overflow-x: hidden;
+            overflow-x: clip;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -702,7 +701,7 @@
         /* ===== FEATURES CAROUSEL ===== */
         .carousel-track {
             position: relative;
-            height: 420vh;
+            height: 500vh;
         }
 
         .carousel-sticky {
@@ -713,7 +712,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
         }
 
         .carousel-header {
