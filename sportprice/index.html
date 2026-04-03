@@ -699,154 +699,141 @@
             100% { transform: translateX(-50%); }
         }
 
-        /* ===== FEATURES BENTO GRID ===== */
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-            margin-top: 64px;
+        /* ===== FEATURES CAROUSEL ===== */
+        .carousel-track {
+            position: relative;
+            height: 420vh;
         }
 
-        .bento-card {
-            background: var(--card);
-            border: 1px solid var(--card-border);
-            border-radius: 24px;
-            padding: 0;
-            position: relative;
+        .carousel-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             overflow: hidden;
-            transition: border-color 0.4s, box-shadow 0.4s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            cursor: default;
+        }
+
+        .carousel-header {
+            text-align: center;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .carousel-scene {
+            perspective: 1200px;
+            width: 320px;
+            height: 580px;
+            position: relative;
+        }
+
+        .carousel-ring {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.05s linear;
+        }
+
+        .carousel-card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 32px;
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
             display: flex;
             flex-direction: column;
         }
 
-        .bento-card:hover {
-            border-color: rgba(255,143,111,0.2);
-            box-shadow: 0 8px 60px rgba(255,143,111,0.06);
-            transform: translateY(-6px);
-        }
+        .carousel-card[data-index="0"] { transform: rotateY(0deg) translateZ(400px); }
+        .carousel-card[data-index="1"] { transform: rotateY(90deg) translateZ(400px); }
+        .carousel-card[data-index="2"] { transform: rotateY(180deg) translateZ(400px); }
+        .carousel-card[data-index="3"] { transform: rotateY(270deg) translateZ(400px); }
 
-        .bento-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 60%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
-            transition: left 0.6s;
-            z-index: 2;
-        }
-
-        .bento-card:hover::before {
-            left: 120%;
-        }
-
-        .bento-card .card-highlight {
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,143,111,0.06), transparent 70%);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-        }
-
-        .bento-card:hover .card-highlight {
-            opacity: 1;
-        }
-
-        .bento-card-screenshot {
-            width: 100%;
-            aspect-ratio: 9/16;
-            max-height: 320px;
+        .carousel-phone {
+            flex: 1;
             overflow: hidden;
-            border-radius: 24px 24px 0 0;
+            border-radius: 32px 32px 0 0;
             position: relative;
         }
 
-        .bento-card-screenshot img {
+        .carousel-phone img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: center 20%;
-            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            object-position: center 25%;
         }
 
-        .bento-card:hover .bento-card-screenshot img {
-            transform: scale(1.05);
-        }
-
-        .bento-card-screenshot::after {
+        .carousel-phone::after {
             content: '';
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 80px;
-            background: linear-gradient(to top, var(--bg), transparent);
-            pointer-events: none;
+            height: 60px;
+            background: linear-gradient(to top, var(--surface), transparent);
         }
 
-        .bento-card-body {
-            padding: 24px 32px 32px;
-            position: relative;
-            z-index: 2;
+        .carousel-caption {
+            padding: 16px 24px 24px;
+            text-align: center;
         }
 
-        .bento-card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            margin-bottom: 16px;
-            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        .bento-card:hover .bento-card-icon {
-            transform: scale(1.15) rotate(-5deg);
-        }
-
-        .bento-card h3 {
-            font-size: 22px;
-            font-weight: 700;
+        .carousel-icon {
+            font-size: 28px;
+            display: block;
             margin-bottom: 8px;
+        }
+
+        .carousel-caption h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
             letter-spacing: -0.02em;
-            transition: transform 0.3s;
         }
 
-        .bento-card:hover h3 {
-            transform: translateX(4px);
-        }
-
-        .bento-card p {
-            font-size: 15px;
+        .carousel-caption p {
+            font-size: 13px;
             color: var(--text2);
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
-        .bento-card .card-glow {
-            position: absolute;
-            width: 200px;
-            height: 200px;
+        .carousel-dots {
+            display: flex;
+            gap: 10px;
+            margin-top: 28px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .carousel-dots .dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.15;
-            pointer-events: none;
-            right: -40px;
-            top: -40px;
-            transition: opacity 0.4s, transform 0.4s;
+            background: var(--text3);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .bento-card:hover .card-glow {
-            opacity: 0.3;
-            transform: scale(1.2);
+        .carousel-dots .dot.active {
+            background: var(--accent);
+            width: 24px;
+            border-radius: 4px;
+            box-shadow: 0 0 12px rgba(255,143,111,0.4);
+        }
+
+        @media (max-width: 600px) {
+            .carousel-scene { width: 260px; height: 480px; }
+            .carousel-card[data-index="0"] { transform: rotateY(0deg) translateZ(300px); }
+            .carousel-card[data-index="1"] { transform: rotateY(90deg) translateZ(300px); }
+            .carousel-card[data-index="2"] { transform: rotateY(180deg) translateZ(300px); }
+            .carousel-card[data-index="3"] { transform: rotateY(270deg) translateZ(300px); }
         }
 
         /* ===== HOW IT WORKS ===== */
@@ -1513,62 +1500,64 @@
         </div>
     </div>
 
-    <!-- Features Bento Grid -->
-    <section id="features">
-        <div class="reveal">
-            <div class="section-label" style="color:var(--accent);">Features</div>
-            <div class="section-title">Everything you need.<br>Nothing you don't.</div>
-            <div class="section-desc">Four powerful tools that turn every meal into an instant fitness decision.</div>
-        </div>
+    <!-- Features Carousel -->
+    <section id="features" class="carousel-track">
+        <div class="carousel-sticky">
+            <div class="carousel-header reveal">
+                <div class="section-label" style="color:var(--accent);">Features</div>
+                <div class="section-title">Everything you need.<br>Nothing you don't.</div>
+            </div>
 
-        <div class="bento-grid">
-            <div class="bento-card reveal reveal-delay-1" data-tilt>
-                <div class="card-highlight"></div>
-                <div class="card-glow" style="background:rgba(255,143,111,0.2);"></div>
-                <div class="bento-card-screenshot">
-                    <img src="images/scan-result.jpg" alt="AI food scan result" style="object-position:center 55%">
-                </div>
-                <div class="bento-card-body">
-                    <div class="bento-card-icon" style="background:rgba(255,143,111,0.12);color:var(--accent);">&#129302;</div>
-                    <h3>AI Food Scanning</h3>
-                    <p>Point your camera at any meal. Powered by Google Gemini, our AI identifies food and estimates calories, protein, carbs, and fat in seconds.</p>
+            <div class="carousel-scene">
+                <div class="carousel-ring" id="carouselRing">
+                    <div class="carousel-card" data-index="0">
+                        <div class="carousel-phone">
+                            <img src="images/scan-result.jpg" alt="AI food scan">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="carousel-icon" style="color:var(--accent);">&#129302;</span>
+                            <h3>AI Food Scanning</h3>
+                            <p>Point your camera at any meal. AI identifies food and estimates calories, protein, carbs, and fat in seconds.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-card" data-index="1">
+                        <div class="carousel-phone">
+                            <img src="images/conversion.jpg" alt="Exercise conversion">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="carousel-icon" style="color:var(--accent2);">&#127939;</span>
+                            <h3>Exercise Conversion</h3>
+                            <p>See how many minutes of running, cycling, or swimming burn off your meal. Personalized to your weight.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-card" data-index="2">
+                        <div class="carousel-phone">
+                            <img src="images/home.jpg" alt="Daily energy balance">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="carousel-icon" style="color:var(--accent3);">&#9889;</span>
+                            <h3>Daily Energy Balance</h3>
+                            <p>Track intake vs. burn at a glance. See your energy balance and make smarter food choices all day.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-card" data-index="3">
+                        <div class="carousel-phone">
+                            <img src="images/chart.jpg" alt="Weekly trends">
+                        </div>
+                        <div class="carousel-caption">
+                            <span class="carousel-icon" style="color:var(--accent);">&#128200;</span>
+                            <h3>Trends &amp; Calendar</h3>
+                            <p>Weekly charts compare intake vs. burn. Browse your history on a visual activity calendar.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="bento-card reveal reveal-delay-2" data-tilt>
-                <div class="card-highlight"></div>
-                <div class="card-glow" style="background:rgba(202,243,0,0.2);"></div>
-                <div class="bento-card-screenshot">
-                    <img src="images/conversion.jpg" alt="Exercise conversion" style="object-position:center 40%">
-                </div>
-                <div class="bento-card-body">
-                    <div class="bento-card-icon" style="background:rgba(202,243,0,0.12);color:var(--accent2);">&#127939;</div>
-                    <h3>Exercise Conversion</h3>
-                    <p>See how long you'd need to run, cycle, swim, or walk to burn off what you just ate. Personalized to your body metrics using MET calculations.</p>
-                </div>
-            </div>
-            <div class="bento-card reveal reveal-delay-1" data-tilt>
-                <div class="card-highlight"></div>
-                <div class="card-glow" style="background:rgba(129,236,255,0.2);"></div>
-                <div class="bento-card-screenshot">
-                    <img src="images/home.jpg" alt="Daily energy balance" style="object-position:center 30%">
-                </div>
-                <div class="bento-card-body">
-                    <div class="bento-card-icon" style="background:rgba(129,236,255,0.12);color:var(--accent3);">&#9889;</div>
-                    <h3>Daily Energy Balance</h3>
-                    <p>Track your daily intake vs. burn in one clear view. See your energy balance at a glance and make smarter food choices throughout the day.</p>
-                </div>
-            </div>
-            <div class="bento-card reveal reveal-delay-2" data-tilt>
-                <div class="card-highlight"></div>
-                <div class="card-glow" style="background:rgba(255,143,111,0.15);"></div>
-                <div class="bento-card-screenshot">
-                    <img src="images/chart.jpg" alt="Weekly trends and calendar" style="object-position:center 55%">
-                </div>
-                <div class="bento-card-body">
-                    <div class="bento-card-icon" style="background:rgba(255,143,111,0.12);color:var(--accent);">&#128200;</div>
-                    <h3>Weekly Trends &amp; Calendar</h3>
-                    <p>Weekly and monthly trend charts show your calorie intake vs. burn over time. Browse your history on a visual activity calendar.</p>
-                </div>
+
+            <div class="carousel-dots" id="carouselDots">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
             </div>
         </div>
     </section>
@@ -1918,6 +1907,43 @@
             phoneFrame.addEventListener('mouseleave', () => {
                 phoneFrame.style.transform = 'scale(1.08) translateY(-20px)';
             });
+        }
+        // ===== SCROLL-DRIVEN CAROUSEL =====
+        const track = document.querySelector('.carousel-track');
+        const ring = document.getElementById('carouselRing');
+        const dots = document.querySelectorAll('#carouselDots .dot');
+
+        if (track && ring) {
+            // Snap easing: slow near each 90° stop, fast between
+            function snapEase(t) {
+                // t is 0-1 linear progress, returns 0-1 with snap pauses at 0, 0.25, 0.5, 0.75, 1
+                const n = 4;
+                const segment = 1 / n;
+                const idx = Math.floor(t / segment);
+                const local = (t - idx * segment) / segment;
+                // ease: slow-fast-slow within each segment
+                const eased = local < 0.5
+                    ? 2 * local * local
+                    : 1 - Math.pow(-2 * local + 2, 2) / 2;
+                return (idx + eased) * segment;
+            }
+
+            function updateCarousel() {
+                const rect = track.getBoundingClientRect();
+                const scrollH = track.offsetHeight - window.innerHeight;
+                const raw = Math.max(0, Math.min(1, -rect.top / scrollH));
+                const eased = snapEase(raw);
+                const angle = eased * 360;
+
+                ring.style.transform = `rotateY(${-angle}deg)`;
+
+                // Update dots
+                const activeIdx = Math.round(eased * 4) % 4;
+                dots.forEach((d, i) => d.classList.toggle('active', i === activeIdx));
+            }
+
+            window.addEventListener('scroll', updateCarousel, { passive: true });
+            updateCarousel();
         }
     </script>
 </body>
