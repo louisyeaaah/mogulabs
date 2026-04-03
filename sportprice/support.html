@@ -6,112 +6,159 @@
     <title>Support - SportPrice</title>
     <meta name="description" content="SportPrice support page. Get help with food scanning, subscriptions, HealthKit sync, and more.">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
         :root {
-            --coral: #FF8F6F;
-            --lime: #CAF300;
-            --dark-bg: #1C1C1E;
-            --dark-surface: #2C2C2E;
-            --dark-elevated: #3A3A3C;
-            --text-primary: #FFFFFF;
-            --text-secondary: #ABABAB;
-            --text-muted: #8E8E93;
+            --bg: #0a0a0c;
+            --surface: #1C1C1E;
+            --card: rgba(255,143,111,0.04);
+            --card-border: rgba(255,143,111,0.08);
+            --accent: #FF8F6F;
+            --accent2: #CAF300;
+            --accent3: #81ECFF;
+            --text: #f5f5f7;
+            --text2: #86868b;
+            --text3: #6e6e73;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; overflow-x: hidden; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Nav */
+        /* ===== SCROLL PROGRESS ===== */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+            z-index: 1001;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* ===== NAVBAR ===== */
         nav {
             position: fixed;
             top: 0;
-            width: 100%;
-            z-index: 100;
-            background: rgba(28, 28, 30, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-            height: 64px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 48px;
+            height: 52px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            background: rgba(10,10,12,0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
         }
 
-        .nav-brand {
+        nav.nav-hidden {
+            transform: translateY(-100%);
+        }
+
+        .nav-logo {
             display: flex;
             align-items: center;
             gap: 10px;
             text-decoration: none;
-            color: var(--text-primary);
+            color: var(--text);
         }
 
-        .nav-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--coral), #FF6B45);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .nav-logo img {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            transition: transform 0.3s;
+        }
+
+        .nav-logo:hover img {
+            transform: rotate(-10deg) scale(1.1);
+        }
+
+        .nav-logo span {
+            font-weight: 600;
             font-size: 18px;
-        }
-
-        .nav-brand span {
-            font-weight: 700;
-            font-size: 20px;
             letter-spacing: -0.3px;
         }
 
         .nav-links {
             display: flex;
             gap: 32px;
-            list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
-            color: var(--text-secondary);
+            color: var(--text2);
             text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
+            font-size: 13px;
+            font-weight: 400;
             transition: color 0.2s;
+            position: relative;
         }
 
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--text-primary);
+        .nav-links a:not(.nav-cta)::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-links a:not(.nav-cta):hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover { color: var(--text); }
+        .nav-links a.active { color: var(--text); }
+
+        .nav-cta {
+            background: var(--accent) !important;
+            color: white !important;
+            padding: 6px 16px;
+            border-radius: 980px;
+            font-weight: 500 !important;
+            font-size: 13px !important;
+            transition: all 0.3s !important;
+        }
+
+        .nav-cta:hover {
+            opacity: 0.85;
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(255,143,111,0.3);
         }
 
         .nav-mobile-toggle {
             display: none;
             background: none;
             border: none;
-            color: var(--text-primary);
-            font-size: 24px;
+            color: var(--text);
+            font-size: 22px;
             cursor: pointer;
-            padding: 4px;
+            padding: 4px 8px;
         }
 
-        /* Content */
+        /* ===== PAGE CONTENT ===== */
         .page-content {
             max-width: 800px;
             margin: 0 auto;
             padding: 120px 24px 80px;
+            position: relative;
+            z-index: 2;
         }
 
         .page-header {
@@ -119,115 +166,159 @@
         }
 
         .page-header h1 {
-            font-size: clamp(32px, 5vw, 44px);
+            font-size: clamp(36px, 5vw, 56px);
             font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
         }
 
         .page-header p {
-            font-size: 17px;
-            color: var(--text-secondary);
+            font-size: 18px;
+            color: var(--text2);
+            line-height: 1.5;
         }
 
-        /* Contact Card */
+        /* ===== CONTACT CARD ===== */
         .contact-card {
-            background: linear-gradient(135deg, rgba(255, 143, 111, 0.1), rgba(202, 243, 0, 0.05));
-            border: 1px solid rgba(255, 143, 111, 0.2);
-            border-radius: 20px;
-            padding: 32px;
-            margin-bottom: 48px;
+            background: linear-gradient(135deg, rgba(255,143,111,0.08), rgba(202,243,0,0.04));
+            border: 1px solid rgba(255,143,111,0.15);
+            border-radius: 24px;
+            padding: 40px 36px;
+            margin-bottom: 56px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .contact-card:hover {
+            border-color: rgba(255,143,111,0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 60px rgba(255,143,111,0.08);
+        }
+
+        .contact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            transition: left 0.6s;
+        }
+
+        .contact-card:hover::before {
+            left: 120%;
         }
 
         .contact-card h2 {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
         }
 
         .contact-card p {
             font-size: 15px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
+            color: var(--text2);
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
 
         .contact-email {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 12px 24px;
-            border-radius: 12px;
-            background: var(--dark-surface);
-            border: 1px solid var(--dark-elevated);
-            color: var(--coral);
+            padding: 14px 28px;
+            border-radius: 980px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--accent);
             text-decoration: none;
             font-weight: 600;
             font-size: 16px;
-            transition: background 0.2s, border-color 0.2s;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            z-index: 1;
         }
 
         .contact-email:hover {
-            background: var(--dark-elevated);
-            border-color: rgba(255, 143, 111, 0.3);
+            background: rgba(255,143,111,0.08);
+            border-color: rgba(255,143,111,0.3);
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(255,143,111,0.15);
         }
 
-        /* FAQ */
+        /* ===== FAQ ===== */
         .faq-section {
-            margin-bottom: 48px;
+            margin-bottom: 56px;
         }
 
         .faq-section h2 {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
+            letter-spacing: -0.02em;
         }
 
         .faq-item {
-            background: var(--dark-surface);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
             margin-bottom: 12px;
             overflow: hidden;
-            transition: border-color 0.2s;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
         .faq-item:hover {
-            border-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255,143,111,0.15);
+        }
+
+        .faq-item.open {
+            box-shadow: 0 4px 20px rgba(255,143,111,0.04);
         }
 
         .faq-question {
             width: 100%;
             text-align: left;
-            padding: 20px 24px;
+            padding: 22px 28px;
             background: none;
             border: none;
-            color: var(--text-primary);
+            color: var(--text);
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-family: inherit;
+            font-family: 'Inter', sans-serif;
+            transition: color 0.2s;
+            letter-spacing: -0.01em;
+        }
+
+        .faq-question:hover {
+            color: var(--accent);
         }
 
         .faq-question::after {
             content: '+';
-            font-size: 20px;
-            color: var(--text-muted);
-            transition: transform 0.3s;
+            font-size: 22px;
+            color: var(--text3);
+            transition: transform 0.3s, color 0.3s;
             flex-shrink: 0;
             margin-left: 16px;
+            font-weight: 300;
         }
 
         .faq-item.open .faq-question::after {
             content: '\2212';
+            color: var(--accent);
         }
 
         .faq-answer {
             display: none;
-            padding: 0 24px 20px;
+            padding: 0 28px 24px;
         }
 
         .faq-item.open .faq-answer {
@@ -236,56 +327,80 @@
 
         .faq-answer p {
             font-size: 15px;
-            color: var(--text-secondary);
+            color: var(--text2);
             line-height: 1.7;
+            margin-bottom: 8px;
+        }
+
+        .faq-answer p:last-child {
+            margin-bottom: 0;
         }
 
         .faq-answer ul {
-            margin: 8px 0 0 20px;
-            color: var(--text-secondary);
+            margin: 10px 0 0 20px;
+            color: var(--text2);
             font-size: 15px;
         }
 
         .faq-answer ul li {
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             line-height: 1.6;
         }
 
-        /* Troubleshooting */
+        .faq-answer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .faq-answer a:hover {
+            opacity: 0.8;
+        }
+
+        /* ===== TROUBLESHOOTING ===== */
         .troubleshooting {
-            margin-bottom: 48px;
+            margin-bottom: 56px;
         }
 
         .troubleshooting h2 {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
+            letter-spacing: -0.02em;
         }
 
         .trouble-card {
-            background: var(--dark-surface);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 16px;
-            padding: 24px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 28px 32px;
             margin-bottom: 16px;
+            transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+        }
+
+        .trouble-card:hover {
+            border-color: rgba(255,143,111,0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255,143,111,0.04);
         }
 
         .trouble-card h3 {
-            font-size: 16px;
+            font-size: 17px;
             font-weight: 700;
-            margin-bottom: 12px;
-            color: var(--coral);
+            margin-bottom: 14px;
+            color: var(--accent);
+            letter-spacing: -0.01em;
         }
 
         .trouble-card p {
             font-size: 15px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
+            color: var(--text2);
+            margin-bottom: 10px;
             line-height: 1.6;
         }
 
         .trouble-steps {
-            margin: 8px 0 0 0;
+            margin: 10px 0 0 0;
             padding: 0;
             list-style: none;
             counter-reset: step;
@@ -294,8 +409,8 @@
         .trouble-steps li {
             counter-increment: step;
             font-size: 14px;
-            color: var(--text-secondary);
-            padding: 6px 0 6px 32px;
+            color: var(--text2);
+            padding: 8px 0 8px 36px;
             position: relative;
             line-height: 1.5;
         }
@@ -304,12 +419,12 @@
             content: counter(step);
             position: absolute;
             left: 0;
-            top: 6px;
-            width: 22px;
-            height: 22px;
+            top: 8px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
-            background: rgba(255, 143, 111, 0.15);
-            color: var(--coral);
+            background: rgba(255,143,111,0.12);
+            color: var(--accent);
             font-size: 12px;
             font-weight: 700;
             display: flex;
@@ -317,62 +432,103 @@
             justify-content: center;
         }
 
-        /* Footer */
+        /* ===== GRID BACKGROUND ===== */
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+            background-size: 80px 80px;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+        }
+
+        /* ===== FOOTER ===== */
         footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: 1px solid rgba(255,255,255,0.06);
             padding: 48px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
 
         .footer-inner {
-            max-width: 1200px;
-            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-left img {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            transition: transform 0.3s;
+        }
+
+        .footer-left:hover img {
+            transform: rotate(-10deg);
+        }
+
+        .footer-left span {
+            font-size: 14px;
+            color: var(--text2);
         }
 
         .footer-links {
             display: flex;
             gap: 24px;
-            list-style: none;
         }
 
         .footer-links a {
-            color: var(--text-muted);
+            font-size: 13px;
+            color: var(--text3);
             text-decoration: none;
-            font-size: 14px;
-            transition: color 0.2s;
+            transition: color 0.2s, transform 0.2s;
+            display: inline-block;
         }
 
         .footer-links a:hover {
-            color: var(--text-secondary);
+            color: var(--text);
+            transform: translateY(-1px);
         }
 
-        .footer-copy {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
-
-        /* Responsive */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+
             .nav-links {
                 display: none;
-                position: absolute;
-                top: 64px;
+                position: fixed;
+                top: 52px;
                 left: 0;
                 right: 0;
-                background: rgba(28, 28, 30, 0.97);
-                backdrop-filter: blur(20px);
+                background: rgba(10,10,12,0.97);
+                backdrop-filter: saturate(180%) blur(20px);
+                -webkit-backdrop-filter: saturate(180%) blur(20px);
                 flex-direction: column;
-                padding: 16px 24px;
-                gap: 12px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                padding: 20px 24px;
+                gap: 16px;
+                border-bottom: 1px solid rgba(255,255,255,0.06);
             }
 
             .nav-links.open {
                 display: flex;
+            }
+
+            .nav-links a {
+                font-size: 16px;
+                padding: 4px 0;
             }
 
             .nav-mobile-toggle {
@@ -381,6 +537,7 @@
 
             .footer-inner {
                 flex-direction: column;
+                gap: 16px;
                 text-align: center;
             }
 
@@ -393,183 +550,241 @@
 </head>
 <body>
 
-<!-- Navigation -->
-<nav>
-    <div class="nav-inner">
-        <a href="index.html" class="nav-brand">
-            <div class="nav-icon">S</div>
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Grid Background -->
+    <div class="grid-bg"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="index.html" class="nav-logo">
+            <img src="images/appicon.png" alt="SportPrice">
             <span>SportPrice</span>
         </a>
-        <button class="nav-mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="privacy.html">Privacy</a></li>
-            <li><a href="support.html" class="active">Support</a></li>
-        </ul>
-    </div>
-</nav>
+        <button class="nav-mobile-toggle" id="navToggle" aria-label="Toggle menu">&#9776;</button>
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">Home</a>
+            <a href="index.html#features">Features</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="support.html" class="active">Support</a>
+            <a href="https://apps.apple.com/app/sportprice/id6761371398" target="_blank" rel="noopener" class="nav-cta">App Store</a>
+        </div>
+    </nav>
 
-<!-- Support Content -->
-<main class="page-content">
-    <div class="page-header">
-        <h1>Support</h1>
-        <p>Need help with SportPrice? Find answers below or get in touch.</p>
-    </div>
+    <!-- Support Content -->
+    <main class="page-content">
+        <div class="page-header">
+            <h1>Support</h1>
+            <p>Need help with SportPrice? Find answers below or get in touch.</p>
+        </div>
 
-    <!-- Contact -->
-    <div class="contact-card">
-        <h2>Get in Touch</h2>
-        <p>Can't find what you need? Send us an email and we'll get back to you within 24 hours.</p>
-        <a href="mailto:sportprice@mogulabs.tech" class="contact-email">sportprice@mogulabs.tech</a>
-    </div>
+        <!-- Contact -->
+        <div class="contact-card">
+            <h2>Get in Touch</h2>
+            <p>Can't find what you need? Send us an email and we'll get back to you within 24 hours.</p>
+            <a href="mailto:sportprice@mogulabs.tech" class="contact-email">sportprice@mogulabs.tech</a>
+        </div>
 
-    <!-- FAQ -->
-    <div class="faq-section">
-        <h2>Frequently Asked Questions</h2>
+        <!-- FAQ -->
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
 
-        <div class="faq-item open">
-            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                How does the AI food scanning work?
-            </button>
-            <div class="faq-answer">
-                <p>Point your camera at any food and tap the scan button. SportPrice uses Google's Gemini AI to identify the food, estimate calories, and provide a macro breakdown (protein, carbs, fat). The AI processes your photo in seconds and returns results directly to your device.</p>
+            <div class="faq-item open">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    How does the AI food scanning work?
+                </button>
+                <div class="faq-answer">
+                    <p>Point your camera at any food and tap the scan button. SportPrice uses Google's Gemini AI to identify the food, estimate calories, and provide a macro breakdown (protein, carbs, fat). The AI processes your photo in seconds and returns results directly to your device.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    How many free scans do I get?
+                </button>
+                <div class="faq-answer">
+                    <p>Free users get 3 AI food scans per day. This resets at midnight. Upgrading to SportPrice Pro gives you unlimited scans.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    How accurate are the calorie estimates?
+                </button>
+                <div class="faq-answer">
+                    <p>AI calorie estimates are approximations based on visual analysis. They work best with clearly visible single dishes. Accuracy can vary depending on portion size, preparation method, and food complexity. We recommend using the estimates as a helpful guide rather than an exact measurement.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    How are exercise conversions calculated?
+                </button>
+                <div class="faq-answer">
+                    <p>Exercise conversions use the MET (Metabolic Equivalent of Task) system combined with your personal profile (weight, height, age, gender). This gives you personalized estimates of how long various activities would take to burn the equivalent calories. Go to Settings to update your profile for more accurate results.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    What HealthKit data does SportPrice access?
+                </button>
+                <div class="faq-answer">
+                    <p>With your permission, SportPrice can:</p>
+                    <ul>
+                        <li><strong>Read:</strong> Workout data (exercise type, duration, calories burned)</li>
+                        <li><strong>Write:</strong> Weight and body fat percentage</li>
+                    </ul>
+                    <p>This data never leaves your device. You can manage HealthKit permissions at any time in Settings > Privacy > Health.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    How do I cancel my subscription?
+                </button>
+                <div class="faq-answer">
+                    <p>SportPrice subscriptions are managed through the App Store. To cancel:</p>
+                    <ul>
+                        <li>Open the <strong>Settings</strong> app on your iPhone</li>
+                        <li>Tap your name at the top, then <strong>Subscriptions</strong></li>
+                        <li>Find <strong>SportPrice Pro</strong> and tap <strong>Cancel Subscription</strong></li>
+                    </ul>
+                    <p>You'll continue to have access until the end of your current billing period.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    Is my data private?
+                </button>
+                <div class="faq-answer">
+                    <p>Yes. Your food logs, exercise data, and personal profile are stored locally on your device. Photos uploaded for AI analysis are not permanently stored on our servers. We do not use any third-party analytics or tracking. See our <a href="privacy.html">Privacy Policy</a> for full details.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                    Can I restore my purchase on a new device?
+                </button>
+                <div class="faq-answer">
+                    <p>Yes. Sign in with the same Apple ID on your new device and open SportPrice. Your subscription status will be automatically restored via the App Store. If it doesn't restore immediately, go to Settings within the app and tap "Restore Purchases".</p>
+                </div>
             </div>
         </div>
 
-        <div class="faq-item">
-            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                How many free scans do I get?
-            </button>
-            <div class="faq-answer">
-                <p>Free users get 3 AI food scans per day. This resets at midnight. Upgrading to SportPrice Pro gives you unlimited scans.</p>
+        <!-- Troubleshooting -->
+        <div class="troubleshooting">
+            <h2>Troubleshooting</h2>
+
+            <div class="trouble-card">
+                <h3>AI scan is not recognizing my food</h3>
+                <p>For best results:</p>
+                <ol class="trouble-steps">
+                    <li>Make sure the food is clearly visible and well-lit.</li>
+                    <li>Avoid scanning multiple different dishes in one photo.</li>
+                    <li>Hold your phone steady and wait for the camera to focus.</li>
+                    <li>Try scanning from a slightly different angle if the first attempt fails.</li>
+                </ol>
+            </div>
+
+            <div class="trouble-card">
+                <h3>HealthKit data is not syncing</h3>
+                <ol class="trouble-steps">
+                    <li>Open iPhone Settings > Privacy &amp; Security > Health.</li>
+                    <li>Tap SportPrice and make sure all relevant permissions are enabled.</li>
+                    <li>If permissions were denied previously, toggle them off and back on.</li>
+                    <li>Restart the app and check again.</li>
+                </ol>
+            </div>
+
+            <div class="trouble-card">
+                <h3>Subscription not showing as active</h3>
+                <ol class="trouble-steps">
+                    <li>Make sure you are signed in with the Apple ID used for the purchase.</li>
+                    <li>Open SportPrice and go to Settings > Restore Purchases.</li>
+                    <li>Check iPhone Settings > [Your Name] > Subscriptions to verify the subscription status.</li>
+                    <li>If the issue persists, try restarting the app or your device.</li>
+                </ol>
+            </div>
+
+            <div class="trouble-card">
+                <h3>App is crashing or freezing</h3>
+                <ol class="trouble-steps">
+                    <li>Make sure you are running the latest version of SportPrice from the App Store.</li>
+                    <li>Ensure your device is running iOS 17.0 or later.</li>
+                    <li>Force quit the app (swipe up from the app switcher) and reopen it.</li>
+                    <li>If the problem continues, try restarting your device.</li>
+                    <li>Still having trouble? Email us with a description of what you were doing when it happened.</li>
+                </ol>
             </div>
         </div>
+    </main>
 
-        <div class="faq-item">
-            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                How accurate are the calorie estimates?
-            </button>
-            <div class="faq-answer">
-                <p>AI calorie estimates are approximations based on visual analysis. They work best with clearly visible single dishes. Accuracy can vary depending on portion size, preparation method, and food complexity. We recommend using the estimates as a helpful guide rather than an exact measurement.</p>
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-left">
+                <img src="images/appicon.png" alt="SportPrice">
+                <span>&copy; 2026 SportPrice. All rights reserved.</span>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="support.html">Support</a>
+                <a href="https://mogulabs.tech" target="_blank" rel="noopener">mogulabs.tech</a>
             </div>
         </div>
+    </footer>
 
-        <div class="faq-item">
-            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                How are exercise conversions calculated?
-            </button>
-            <div class="faq-answer">
-                <p>Exercise conversions use the MET (Metabolic Equivalent of Task) system combined with your personal profile (weight, height, age, gender). This gives you personalized estimates of how long various activities would take to burn the equivalent calories. Go to Settings to update your profile for more accurate results.</p>
-            </div>
-        </div>
+    <script>
+        // Scroll Progress
+        const scrollProgress = document.getElementById('scrollProgress');
+        function updateProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            scrollProgress.style.width = progress + '%';
+        }
 
-        <div class="faq-item">
-            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                What HealthKit data does SportPrice access?
-            </button>
-            <div class="faq-answer">
-                <p>With your permission, SportPrice can:</p>
-                <ul>
-                    <li><strong>Read:</strong> Workout data (exercise type, duration, calories burned)</li>
-                    <li><strong>Write:</strong> Weight and body fat percentage</li>
-                </ul>
-                <p>This data never leaves your device. You can manage HealthKit permissions at any time in Settings > Privacy > Health.</p>
-            </div>
-        </div>
+        // Navbar hide/show
+        let lastScrollY = 0;
+        const navbar = document.getElementById('navbar');
 
-        <div class="faq-item">
-            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                How do I cancel my subscription?
-            </button>
-            <div class="faq-answer">
-                <p>SportPrice subscriptions are managed through the App Store. To cancel:</p>
-                <ul>
-                    <li>Open the <strong>Settings</strong> app on your iPhone</li>
-                    <li>Tap your name at the top, then <strong>Subscriptions</strong></li>
-                    <li>Find <strong>SportPrice Pro</strong> and tap <strong>Cancel Subscription</strong></li>
-                </ul>
-                <p>You'll continue to have access until the end of your current billing period.</p>
-            </div>
-        </div>
+        function handleScroll() {
+            updateProgress();
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > 200) {
+                if (currentScrollY > lastScrollY + 5) {
+                    navbar.classList.add('nav-hidden');
+                } else if (currentScrollY < lastScrollY - 5) {
+                    navbar.classList.remove('nav-hidden');
+                }
+            } else {
+                navbar.classList.remove('nav-hidden');
+            }
+            navbar.style.background = currentScrollY > 50
+                ? 'rgba(10,10,12,0.92)'
+                : 'rgba(10,10,12,0.72)';
+            lastScrollY = currentScrollY;
+        }
 
-        <div class="faq-item">
-            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                Is my data private?
-            </button>
-            <div class="faq-answer">
-                <p>Yes. Your food logs, exercise data, and personal profile are stored locally on your device. Photos uploaded for AI analysis are not permanently stored on our servers. We do not use any third-party analytics or tracking. See our <a href="privacy.html" style="color: var(--coral);">Privacy Policy</a> for full details.</p>
-            </div>
-        </div>
+        let scrollTicking = false;
+        window.addEventListener('scroll', () => {
+            if (!scrollTicking) {
+                requestAnimationFrame(() => {
+                    handleScroll();
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
+        }, { passive: true });
 
-        <div class="faq-item">
-            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                Can I restore my purchase on a new device?
-            </button>
-            <div class="faq-answer">
-                <p>Yes. Sign in with the same Apple ID on your new device and open SportPrice. Your subscription status will be automatically restored via the App Store. If it doesn't restore immediately, go to Settings within the app and tap "Restore Purchases".</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Troubleshooting -->
-    <div class="troubleshooting">
-        <h2>Troubleshooting</h2>
-
-        <div class="trouble-card">
-            <h3>AI scan is not recognizing my food</h3>
-            <p>For best results:</p>
-            <ol class="trouble-steps">
-                <li>Make sure the food is clearly visible and well-lit.</li>
-                <li>Avoid scanning multiple different dishes in one photo.</li>
-                <li>Hold your phone steady and wait for the camera to focus.</li>
-                <li>Try scanning from a slightly different angle if the first attempt fails.</li>
-            </ol>
-        </div>
-
-        <div class="trouble-card">
-            <h3>HealthKit data is not syncing</h3>
-            <ol class="trouble-steps">
-                <li>Open iPhone Settings > Privacy &amp; Security > Health.</li>
-                <li>Tap SportPrice and make sure all relevant permissions are enabled.</li>
-                <li>If permissions were denied previously, toggle them off and back on.</li>
-                <li>Restart the app and check again.</li>
-            </ol>
-        </div>
-
-        <div class="trouble-card">
-            <h3>Subscription not showing as active</h3>
-            <ol class="trouble-steps">
-                <li>Make sure you are signed in with the Apple ID used for the purchase.</li>
-                <li>Open SportPrice and go to Settings > Restore Purchases.</li>
-                <li>Check iPhone Settings > [Your Name] > Subscriptions to verify the subscription status.</li>
-                <li>If the issue persists, try restarting the app or your device.</li>
-            </ol>
-        </div>
-
-        <div class="trouble-card">
-            <h3>App is crashing or freezing</h3>
-            <ol class="trouble-steps">
-                <li>Make sure you are running the latest version of SportPrice from the App Store.</li>
-                <li>Ensure your device is running iOS 17.0 or later.</li>
-                <li>Force quit the app (swipe up from the app switcher) and reopen it.</li>
-                <li>If the problem continues, try restarting your device.</li>
-                <li>Still having trouble? Email us with a description of what you were doing when it happened.</li>
-            </ol>
-        </div>
-    </div>
-</main>
-
-<!-- Footer -->
-<footer>
-    <div class="footer-inner">
-        <span class="footer-copy">&copy; 2026 SportPrice. All rights reserved.</span>
-        <ul class="footer-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="privacy.html">Privacy Policy</a></li>
-            <li><a href="support.html">Support</a></li>
-        </ul>
-    </div>
-</footer>
-
+        // Mobile menu
+        document.getElementById('navToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+    </script>
 </body>
 </html>

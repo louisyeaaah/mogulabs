@@ -3,221 +3,519 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SportPrice - See the Workout in Every Bite</title>
-    <meta name="description" content="SportPrice converts food calories into exercise equivalents. Scan your meal, see the workout. Available on the App Store.">
+    <title>SportPrice — Know the Price of Every Bite</title>
+    <meta name="description" content="SportPrice converts food calories into exercise equivalents. Scan your meal with AI, see the workout cost instantly. Available on the App Store.">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
         :root {
-            --coral: #FF8F6F;
-            --lime: #CAF300;
-            --dark-bg: #1C1C1E;
-            --dark-surface: #2C2C2E;
-            --dark-elevated: #3A3A3C;
-            --text-primary: #FFFFFF;
-            --text-secondary: #ABABAB;
-            --text-muted: #8E8E93;
+            --bg: #0a0a0c;
+            --surface: #1C1C1E;
+            --card: rgba(255,143,111,0.04);
+            --card-border: rgba(255,143,111,0.08);
+            --accent: #FF8F6F;
+            --accent2: #CAF300;
+            --accent3: #81ECFF;
+            --text: #f5f5f7;
+            --text2: #86868b;
+            --text3: #6e6e73;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
-            line-height: 1.6;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Nav */
+        /* ===== PAGE LOADER ===== */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s;
+        }
+
+        .page-loader.hide {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-logo {
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            overflow: hidden;
+            animation: loaderPulse 1.2s ease-in-out infinite;
+        }
+
+        .loader-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes loaderPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,143,111,0.4); }
+            50% { transform: scale(1.08); box-shadow: 0 0 40px 10px rgba(255,143,111,0.2); }
+        }
+
+        /* ===== SCROLL PROGRESS ===== */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+            z-index: 1001;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* ===== CURSOR GLOW ===== */
+        .cursor-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,143,111,0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.3s;
+            opacity: 0;
+        }
+
+        .cursor-glow.visible {
+            opacity: 1;
+        }
+
+        /* ===== NAVBAR ===== */
         nav {
             position: fixed;
             top: 0;
-            width: 100%;
-            z-index: 100;
-            background: rgba(28, 28, 30, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-            height: 64px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 48px;
+            height: 52px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            background: rgba(10,10,12,0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s;
         }
 
-        .nav-brand {
+        nav.nav-hidden {
+            transform: translateY(-100%);
+        }
+
+        .nav-logo {
             display: flex;
             align-items: center;
             gap: 10px;
             text-decoration: none;
-            color: var(--text-primary);
+            color: var(--text);
         }
 
-        .nav-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--coral), #FF6B45);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .nav-logo img {
+            width: 28px;
+            height: 28px;
+            border-radius: 7px;
+            transition: transform 0.3s;
+        }
+
+        .nav-logo:hover img {
+            transform: rotate(-10deg) scale(1.1);
+        }
+
+        .nav-logo span {
+            font-weight: 600;
             font-size: 18px;
-        }
-
-        .nav-brand span {
-            font-weight: 700;
-            font-size: 20px;
             letter-spacing: -0.3px;
         }
 
         .nav-links {
             display: flex;
             gap: 32px;
-            list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
-            color: var(--text-secondary);
+            color: var(--text2);
             text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
+            font-size: 13px;
+            font-weight: 400;
             transition: color 0.2s;
+            position: relative;
         }
 
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--text-primary);
+        .nav-links a:not(.nav-cta)::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--accent);
+            transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .nav-links a:not(.nav-cta):hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover { color: var(--text); }
+
+        .nav-cta {
+            background: var(--accent) !important;
+            color: white !important;
+            padding: 6px 16px;
+            border-radius: 980px;
+            font-weight: 500 !important;
+            font-size: 13px !important;
+            transition: all 0.3s !important;
+        }
+
+        .nav-cta:hover {
+            opacity: 0.85;
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(255,143,111,0.3);
         }
 
         .nav-mobile-toggle {
             display: none;
             background: none;
             border: none;
-            color: var(--text-primary);
-            font-size: 24px;
+            color: var(--text);
+            font-size: 22px;
             cursor: pointer;
-            padding: 4px;
+            padding: 4px 8px;
         }
 
-        /* Hero */
+        /* ===== HERO ===== */
         .hero {
-            padding: 160px 24px 100px;
-            text-align: center;
             position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
             overflow: hidden;
         }
 
         .hero::before {
             content: '';
             position: absolute;
-            top: -200px;
+            top: -40%;
             left: 50%;
             transform: translateX(-50%);
             width: 800px;
             height: 800px;
-            background: radial-gradient(circle, rgba(255, 143, 111, 0.12) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255,143,111,0.15) 0%, rgba(202,243,0,0.06) 40%, transparent 70%);
             pointer-events: none;
+            animation: heroGlow 8s ease-in-out infinite alternate;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(129,236,255,0.06) 0%, transparent 60%);
+            pointer-events: none;
+            animation: heroGlow2 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroGlow {
+            0% { transform: translateX(-50%) scale(1) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateX(-50%) scale(1.2) rotate(10deg); opacity: 1; }
+        }
+
+        @keyframes heroGlow2 {
+            0% { transform: translateX(-50%) scale(1); }
+            100% { transform: translateX(-40%) scale(1.3); }
         }
 
         .hero-badge {
-            display: inline-block;
-            padding: 6px 16px;
-            border-radius: 100px;
-            background: rgba(202, 243, 0, 0.1);
-            border: 1px solid rgba(202, 243, 0, 0.25);
-            color: var(--lime);
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-bottom: 24px;
-        }
-
-        .hero h1 {
-            font-size: clamp(40px, 7vw, 72px);
-            font-weight: 800;
-            letter-spacing: -1.5px;
-            line-height: 1.08;
-            max-width: 800px;
-            margin: 0 auto 24px;
-        }
-
-        .hero h1 .gradient-text {
-            background: linear-gradient(135deg, var(--coral), #FFB088);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: clamp(17px, 2.2vw, 20px);
-            color: var(--text-secondary);
-            max-width: 560px;
-            margin: 0 auto 40px;
-            line-height: 1.5;
-        }
-
-        .hero-cta {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .app-store-badge {
-            height: 54px;
-            transition: transform 0.2s, opacity 0.2s;
-        }
-
-        .app-store-badge:hover {
-            transform: scale(1.05);
-            opacity: 0.9;
-        }
-
-        .cta-secondary {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 14px 28px;
-            border-radius: 14px;
-            background: var(--dark-surface);
-            border: 1px solid var(--dark-elevated);
-            color: var(--text-primary);
-            text-decoration: none;
+            padding: 6px 16px 6px 8px;
+            background: rgba(255,143,111,0.1);
+            border: 1px solid rgba(255,143,111,0.2);
+            border-radius: 980px;
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 500;
+            margin-bottom: 32px;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            animation: fadeUpScale 0.8s 0.5s forwards;
+        }
+
+        .hero-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255,143,111,0.4); }
+            50% { opacity: 0.4; box-shadow: 0 0 0 6px rgba(255,143,111,0); }
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 8vw, 96px);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 .word {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(40px) rotateX(40deg);
+            animation: wordReveal 0.7s forwards;
+            transform-origin: bottom center;
+        }
+
+        @keyframes wordReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0) rotateX(0);
+            }
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent3) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientShift 5s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-sub {
+            font-size: clamp(18px, 2.5vw, 24px);
+            color: var(--text2);
+            max-width: 640px;
+            line-height: 1.5;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+            margin-bottom: 48px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 0.8s 1.2s forwards;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeUp 0.8s 1.4s forwards;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            background: white;
+            color: #000;
+            border-radius: 980px;
+            font-size: 17px;
             font-weight: 600;
-            font-size: 16px;
-            transition: background 0.2s, border-color 0.2s;
+            text-decoration: none;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .cta-secondary:hover {
-            background: var(--dark-elevated);
-            border-color: rgba(255, 255, 255, 0.15);
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
         }
 
-        /* Phone Mockup */
-        .phone-showcase {
-            padding: 40px 24px 80px;
-            text-align: center;
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 40px rgba(255,255,255,0.15);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.97);
+        }
+
+        .btn-primary svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(255,143,111,0.3);
+            border-radius: 980px;
+            font-size: 17px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,143,111,0.08);
+            border-color: rgba(255,143,111,0.5);
+            transform: scale(1.05);
+            box-shadow: 0 4px 30px rgba(255,143,111,0.15);
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.97);
+        }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeUpScale {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ===== HERO DEVICE SHOWCASE (3 phones) ===== */
+        .hero-devices {
+            position: relative;
+            margin-top: 80px;
+            opacity: 0;
+            transform: translateY(80px) scale(0.9);
+            animation: deviceReveal 1.2s 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            perspective: 1200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        @keyframes deviceReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .phone-frame {
-            display: inline-block;
             position: relative;
-            width: 280px;
-            height: 580px;
-            background: var(--dark-surface);
-            border-radius: 40px;
-            border: 3px solid var(--dark-elevated);
+            width: 260px;
+            height: 540px;
+            background: linear-gradient(145deg, #1a1a1e, #0d0d10);
+            border-radius: 44px;
+            border: 2px solid rgba(255,255,255,0.1);
+            padding: 10px;
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.05),
+                0 20px 80px rgba(0,0,0,0.6),
+                0 0 120px rgba(255,143,111,0.08),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s;
+            flex-shrink: 0;
+        }
+
+        .phone-frame:hover {
+            box-shadow:
+                0 0 0 1px rgba(255,255,255,0.08),
+                0 30px 100px rgba(0,0,0,0.6),
+                0 0 160px rgba(255,143,111,0.12),
+                inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+
+        .phone-frame.center {
+            z-index: 3;
+            transform: scale(1.08) translateY(-20px);
+        }
+
+        .phone-frame.center:hover {
+            transform: scale(1.12) translateY(-24px) rotateY(-3deg) rotateX(3deg);
+        }
+
+        .phone-frame.left {
+            z-index: 1;
+            transform: perspective(1000px) rotateY(15deg) scale(0.9) translateX(40px);
+        }
+
+        .phone-frame.left:hover {
+            transform: perspective(1000px) rotateY(10deg) scale(0.93) translateX(40px) translateY(-8px);
+        }
+
+        .phone-frame.right {
+            z-index: 1;
+            transform: perspective(1000px) rotateY(-15deg) scale(0.9) translateX(-40px);
+        }
+
+        .phone-frame.right:hover {
+            transform: perspective(1000px) rotateY(-10deg) scale(0.93) translateX(-40px) translateY(-8px);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            border-radius: 34px;
             overflow: hidden;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .phone-screen img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
         }
 
         .phone-notch {
@@ -228,576 +526,1400 @@
             width: 120px;
             height: 28px;
             background: #000;
-            border-radius: 0 0 20px 20px;
+            border-radius: 0 0 18px 18px;
             z-index: 2;
         }
 
-        .phone-screen {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px 20px;
-            background: linear-gradient(180deg, var(--dark-bg) 0%, #252527 100%);
+        .device-glow {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(80px);
         }
 
-        .phone-screen .mock-food {
-            font-size: 64px;
+        .device-glow-1 {
+            width: 300px; height: 300px;
+            background: rgba(255,143,111,0.12);
+            top: 20%; left: -100px;
+            animation: float1 6s ease-in-out infinite;
+        }
+
+        .device-glow-2 {
+            width: 250px; height: 250px;
+            background: rgba(202,243,0,0.08);
+            bottom: 10%; right: -80px;
+            animation: float2 7s ease-in-out infinite;
+        }
+
+        .device-glow-3 {
+            width: 200px; height: 200px;
+            background: rgba(129,236,255,0.08);
+            top: 50%; right: -60px;
+            animation: float3 5s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(20px, -30px) scale(1.1); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-15px, 20px) scale(1.15); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(10px, -20px) scale(1.05); }
+        }
+
+        /* ===== SCROLL REVEAL ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-60px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-right {
+            opacity: 0;
+            transform: translateX(60px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-right.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.85);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal-scale.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* ===== SECTION COMMON ===== */
+        section {
+            padding: 160px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             margin-bottom: 16px;
         }
 
-        .phone-screen .mock-cal {
-            font-size: 28px;
+        .section-title {
+            font-size: clamp(36px, 5vw, 64px);
             font-weight: 800;
-            color: var(--coral);
-            margin-bottom: 4px;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: 20px;
         }
 
-        .phone-screen .mock-label {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 24px;
+        .section-desc {
+            font-size: clamp(16px, 2vw, 20px);
+            color: var(--text2);
+            max-width: 560px;
+            line-height: 1.6;
         }
 
-        .mock-exercise-list {
-            width: 100%;
+        /* ===== MARQUEE ===== */
+        .marquee-section {
+            padding: 0;
+            max-width: 100%;
+            overflow: hidden;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.01);
+        }
+
+        .marquee-track {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
+            animation: marquee 30s linear infinite;
+            width: max-content;
         }
 
-        .mock-exercise-row {
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        .marquee-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 10px 14px;
+            gap: 12px;
+            padding: 28px 48px;
+            white-space: nowrap;
+            color: var(--text3);
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.3s, transform 0.3s;
         }
 
-        .mock-exercise-row .icon {
+        .marquee-item:hover {
+            color: var(--text);
+            transform: scale(1.05);
+        }
+
+        .marquee-item span {
             font-size: 20px;
+            transition: transform 0.3s;
         }
 
-        .mock-exercise-row .name {
-            flex: 1;
-            font-size: 13px;
-            color: var(--text-secondary);
-            text-align: left;
+        .marquee-item:hover span {
+            transform: scale(1.3) rotate(-10deg);
         }
 
-        .mock-exercise-row .time {
-            font-size: 13px;
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* ===== FEATURES BENTO GRID ===== */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 64px;
+        }
+
+        .bento-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.4s, box-shadow 0.4s, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: default;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bento-card:hover {
+            border-color: rgba(255,143,111,0.2);
+            box-shadow: 0 8px 60px rgba(255,143,111,0.06);
+            transform: translateY(-6px);
+        }
+
+        .bento-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            transition: left 0.6s;
+            z-index: 2;
+        }
+
+        .bento-card:hover::before {
+            left: 120%;
+        }
+
+        .bento-card .card-highlight {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,143,111,0.06), transparent 70%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        .bento-card:hover .card-highlight {
+            opacity: 1;
+        }
+
+        .bento-card-screenshot {
+            width: 100%;
+            aspect-ratio: 9/16;
+            max-height: 320px;
+            overflow: hidden;
+            border-radius: 24px 24px 0 0;
+            position: relative;
+        }
+
+        .bento-card-screenshot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .bento-card:hover .bento-card-screenshot img {
+            transform: scale(1.05);
+        }
+
+        .bento-card-screenshot::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to top, var(--bg), transparent);
+            pointer-events: none;
+        }
+
+        .bento-card-body {
+            padding: 24px 32px 32px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .bento-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 16px;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .bento-card:hover .bento-card-icon {
+            transform: scale(1.15) rotate(-5deg);
+        }
+
+        .bento-card h3 {
+            font-size: 22px;
             font-weight: 700;
-            color: var(--lime);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+            transition: transform 0.3s;
         }
 
-        /* How it Works */
-        .how-it-works {
-            padding: 80px 24px;
+        .bento-card:hover h3 {
+            transform: translateX(4px);
         }
 
-        .section-header {
+        .bento-card p {
+            font-size: 15px;
+            color: var(--text2);
+            line-height: 1.6;
+        }
+
+        .bento-card .card-glow {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            pointer-events: none;
+            right: -40px;
+            top: -40px;
+            transition: opacity 0.4s, transform 0.4s;
+        }
+
+        .bento-card:hover .card-glow {
+            opacity: 0.3;
+            transform: scale(1.2);
+        }
+
+        /* ===== HOW IT WORKS ===== */
+        .how-section {
             text-align: center;
-            margin-bottom: 64px;
         }
 
-        .section-header h2 {
-            font-size: clamp(28px, 4vw, 40px);
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 12px;
+        .how-section .section-desc {
+            margin: 0 auto 64px;
         }
 
-        .section-header p {
-            font-size: 17px;
-            color: var(--text-secondary);
-            max-width: 480px;
-            margin: 0 auto;
-        }
-
-        .steps {
-            max-width: 1000px;
-            margin: 0 auto;
+        .steps-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
-        .step {
-            text-align: center;
-            padding: 40px 24px;
+        .step-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
             border-radius: 24px;
-            background: var(--dark-surface);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: border-color 0.3s, transform 0.3s;
+            padding: 48px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .step:hover {
-            border-color: rgba(255, 143, 111, 0.3);
-            transform: translateY(-4px);
+        .step-card:hover {
+            border-color: rgba(255,143,111,0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 16px 60px rgba(255,143,111,0.06);
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+            transition: left 0.6s;
+        }
+
+        .step-card:hover::before {
+            left: 120%;
         }
 
         .step-number {
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
             border-radius: 16px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 800;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .step:nth-child(1) .step-number {
-            background: rgba(255, 143, 111, 0.15);
-            color: var(--coral);
+        .step-card:hover .step-number {
+            transform: scale(1.15) rotate(-5deg);
         }
 
-        .step:nth-child(2) .step-number {
-            background: rgba(202, 243, 0, 0.15);
-            color: var(--lime);
-        }
-
-        .step:nth-child(3) .step-number {
-            background: rgba(100, 210, 255, 0.15);
-            color: #64D2FF;
-        }
-
-        .step-icon {
-            font-size: 40px;
-            margin-bottom: 16px;
-        }
-
-        .step h3 {
-            font-size: 20px;
+        .step-card h3 {
+            font-size: 22px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
         }
 
-        .step p {
+        .step-card p {
             font-size: 15px;
-            color: var(--text-secondary);
-            line-height: 1.5;
+            color: var(--text2);
+            line-height: 1.6;
         }
 
-        /* Features */
-        .features {
-            padding: 80px 24px;
+        .step-connector {
+            display: none;
         }
 
-        .features-grid {
-            max-width: 1000px;
+        /* ===== STATEMENT ===== */
+        .statement {
+            padding: 200px 24px;
+            text-align: center;
+            position: relative;
+            max-width: 100%;
+        }
+
+        .statement::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(202,243,0,0.06) 0%, transparent 70%);
+            pointer-events: none;
+            animation: statementGlow 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes statementGlow {
+            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0.5; }
+            100% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+        }
+
+        .statement h2 {
+            font-size: clamp(40px, 6vw, 80px);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            max-width: 900px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
         }
 
-        .feature-card {
-            padding: 32px;
-            border-radius: 20px;
-            background: var(--dark-surface);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: border-color 0.3s;
+        .statement h2 em {
+            font-style: normal;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientShift 4s ease infinite;
         }
 
-        .feature-card:hover {
-            border-color: rgba(255, 143, 111, 0.2);
-        }
-
-        .feature-icon {
-            font-size: 32px;
-            margin-bottom: 16px;
-        }
-
-        .feature-card h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .feature-card p {
-            font-size: 15px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        /* Pricing */
-        .pricing {
-            padding: 80px 24px;
-        }
-
-        .pricing-cards {
-            max-width: 800px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-        }
-
-        .pricing-card {
-            padding: 36px 28px;
-            border-radius: 24px;
-            background: var(--dark-surface);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+        /* ===== PRICING ===== */
+        .pricing-section {
             text-align: center;
         }
 
-        .pricing-card.featured {
-            border-color: var(--coral);
-            position: relative;
-            background: linear-gradient(180deg, rgba(255, 143, 111, 0.08) 0%, var(--dark-surface) 100%);
+        .pricing-section .section-desc {
+            margin: 0 auto 64px;
         }
 
-        .pricing-card.featured::before {
-            content: 'BEST VALUE';
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 48px 36px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .pricing-card:hover {
+            border-color: rgba(255,143,111,0.15);
+            transform: translateY(-6px);
+            box-shadow: 0 16px 60px rgba(255,143,111,0.06);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--accent);
+            background: linear-gradient(180deg, rgba(255,143,111,0.08) 0%, rgba(255,143,111,0.02) 100%);
+        }
+
+        .pricing-card.featured:hover {
+            box-shadow: 0 16px 80px rgba(255,143,111,0.12);
+        }
+
+        .pricing-badge {
             position: absolute;
-            top: -12px;
+            top: -1px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--coral);
+            background: var(--accent);
             color: #000;
             font-size: 11px;
             font-weight: 800;
-            padding: 4px 14px;
-            border-radius: 100px;
-            letter-spacing: 0.5px;
+            padding: 5px 16px;
+            border-radius: 0 0 10px 10px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
 
         .pricing-tier {
             font-size: 14px;
             font-weight: 600;
-            color: var(--text-muted);
+            color: var(--text3);
             text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
+            letter-spacing: 0.1em;
+            margin-bottom: 16px;
         }
 
         .pricing-price {
-            font-size: 40px;
+            font-size: 52px;
             font-weight: 800;
+            letter-spacing: -0.03em;
             margin-bottom: 4px;
+        }
+
+        .pricing-card.featured .pricing-price {
+            color: var(--accent);
         }
 
         .pricing-period {
             font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 24px;
+            color: var(--text3);
+            margin-bottom: 32px;
         }
 
         .pricing-features {
             list-style: none;
             text-align: left;
-            margin-bottom: 24px;
+            margin-bottom: 32px;
         }
 
         .pricing-features li {
-            font-size: 14px;
-            color: var(--text-secondary);
-            padding: 6px 0;
+            font-size: 15px;
+            color: var(--text2);
+            padding: 8px 0;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .pricing-features li::before {
-            content: '';
-            width: 18px;
-            height: 18px;
+        .pricing-features li .check {
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            background: rgba(202, 243, 0, 0.15);
+            background: rgba(202,243,0,0.12);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-        }
-
-        .pricing-features li::before {
-            content: '\2713';
             font-size: 11px;
-            color: var(--lime);
+            color: var(--accent2);
         }
 
-        .free-note {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 24px;
+        .pricing-features li.disabled {
+            color: var(--text3);
         }
 
-        /* Footer */
+        .pricing-features li.disabled .check {
+            background: rgba(255,255,255,0.04);
+            color: var(--text3);
+        }
+
+        .pricing-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 32px;
+            border-radius: 980px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            width: 100%;
+        }
+
+        .pricing-cta.primary {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .pricing-cta.primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 30px rgba(255,143,111,0.3);
+        }
+
+        .pricing-cta.secondary {
+            background: rgba(255,255,255,0.06);
+            color: var(--text);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .pricing-cta.secondary:hover {
+            background: rgba(255,255,255,0.1);
+            transform: scale(1.05);
+        }
+
+        .pricing-note {
+            margin-top: 32px;
+            font-size: 14px;
+            color: var(--text3);
+        }
+
+        /* ===== CTA SECTION ===== */
+        .cta-section {
+            text-align: center;
+            padding: 120px 24px 160px;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            color: var(--text2);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .app-store-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: white;
+            color: #000;
+            border-radius: 14px;
+            text-decoration: none;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-store-badge::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(transparent, rgba(255,143,111,0.1), transparent 30%);
+            animation: badgeRotate 4s linear infinite;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .app-store-badge:hover::before {
+            opacity: 1;
+        }
+
+        @keyframes badgeRotate {
+            to { transform: rotate(360deg); }
+        }
+
+        .app-store-badge:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 12px 40px rgba(255,255,255,0.15);
+        }
+
+        .app-store-badge:active {
+            transform: scale(0.97);
+        }
+
+        .app-store-badge svg { width: 28px; height: 28px; position: relative; z-index: 1; }
+
+        .badge-text {
+            text-align: left;
+            position: relative;
+            z-index: 1;
+        }
+
+        .badge-text small {
+            font-size: 10px;
+            display: block;
+            opacity: 0.6;
+        }
+
+        .badge-text strong {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        /* ===== FOOTER ===== */
         footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-top: 1px solid rgba(255,255,255,0.06);
             padding: 48px 24px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .footer-inner {
-            max-width: 1200px;
-            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 16px;
+        }
+
+        .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-left img {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            transition: transform 0.3s;
+        }
+
+        .footer-left:hover img {
+            transform: rotate(-10deg);
+        }
+
+        .footer-left span {
+            font-size: 14px;
+            color: var(--text2);
         }
 
         .footer-links {
             display: flex;
             gap: 24px;
-            list-style: none;
         }
 
         .footer-links a {
-            color: var(--text-muted);
+            font-size: 13px;
+            color: var(--text3);
             text-decoration: none;
-            font-size: 14px;
-            transition: color 0.2s;
+            transition: color 0.2s, transform 0.2s;
+            display: inline-block;
         }
 
         .footer-links a:hover {
-            color: var(--text-secondary);
+            color: var(--text);
+            transform: translateY(-1px);
         }
 
-        .footer-copy {
-            font-size: 14px;
-            color: var(--text-muted);
+        .footer-bottom {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            text-align: center;
+            font-size: 12px;
+            color: var(--text3);
         }
 
-        /* Responsive */
+        /* ===== GRID BACKGROUND ===== */
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+            background-size: 80px 80px;
+            mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 70%);
+        }
+
+        /* ===== PARTICLES ===== */
+        .particles {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* ===== DIVIDER ===== */
+        .divider {
+            max-width: 1200px;
+            margin: 0 auto;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .bento-grid { grid-template-columns: 1fr 1fr; }
+            .steps-grid { grid-template-columns: 1fr; max-width: 400px; }
+            .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+            nav { padding: 0 20px; }
+            .hero-devices { max-width: 600px; }
+            .phone-frame { width: 200px; height: 420px; border-radius: 32px; }
+            .phone-screen { border-radius: 26px; }
+            .phone-notch { width: 90px; height: 22px; border-radius: 0 0 14px 14px; }
+        }
+
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
-                position: absolute;
-                top: 64px;
+                position: fixed;
+                top: 52px;
                 left: 0;
                 right: 0;
-                background: rgba(28, 28, 30, 0.97);
-                backdrop-filter: blur(20px);
+                background: rgba(10,10,12,0.97);
+                backdrop-filter: saturate(180%) blur(20px);
+                -webkit-backdrop-filter: saturate(180%) blur(20px);
                 flex-direction: column;
-                padding: 16px 24px;
-                gap: 12px;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+                padding: 20px 24px;
+                gap: 16px;
+                border-bottom: 1px solid rgba(255,255,255,0.06);
             }
 
             .nav-links.open {
                 display: flex;
             }
 
+            .nav-links a {
+                font-size: 16px;
+                padding: 4px 0;
+            }
+
             .nav-mobile-toggle {
                 display: block;
             }
+        }
 
-            .steps {
-                grid-template-columns: 1fr;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .pricing-cards {
-                grid-template-columns: 1fr;
-                max-width: 400px;
-            }
-
-            .hero {
-                padding: 120px 24px 60px;
-            }
-
-            .footer-inner {
+        @media (max-width: 600px) {
+            .bento-grid { grid-template-columns: 1fr; }
+            .hero-buttons {
                 flex-direction: column;
-                text-align: center;
+                width: 100%;
+                max-width: 320px;
             }
-
-            .footer-links {
-                flex-wrap: wrap;
+            .btn-primary, .btn-secondary {
+                width: 100%;
                 justify-content: center;
             }
+            .cta-buttons { flex-direction: column; align-items: center; }
+            .footer-inner { flex-direction: column; gap: 16px; text-align: center; }
+            .phone-frame { width: 160px; height: 340px; border-radius: 26px; }
+            .phone-frame.center { transform: scale(1.05) translateY(-12px); }
+            .phone-frame.left { transform: perspective(800px) rotateY(12deg) scale(0.85) translateX(24px); }
+            .phone-frame.right { transform: perspective(800px) rotateY(-12deg) scale(0.85) translateX(-24px); }
+            .phone-screen { border-radius: 20px; }
+            .phone-notch { width: 70px; height: 18px; border-radius: 0 0 10px 10px; }
+            section { padding: 100px 20px; }
+            .statement { padding: 120px 20px; }
         }
     </style>
 </head>
 <body>
 
-<!-- Navigation -->
-<nav>
-    <div class="nav-inner">
-        <a href="index.html" class="nav-brand">
-            <div class="nav-icon">S</div>
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-logo">
+            <img src="images/appicon.png" alt="SportPrice">
+        </div>
+    </div>
+
+    <!-- Scroll Progress -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Cursor Glow -->
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- Grid Background -->
+    <div class="grid-bg"></div>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="#" class="nav-logo">
+            <img src="images/appicon.png" alt="SportPrice">
             <span>SportPrice</span>
         </a>
-        <button class="nav-mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
-        <ul class="nav-links">
-            <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="privacy.html">Privacy</a></li>
-            <li><a href="support.html">Support</a></li>
-        </ul>
-    </div>
-</nav>
+        <button class="nav-mobile-toggle" id="navToggle" aria-label="Toggle menu">&#9776;</button>
+        <div class="nav-links" id="navLinks">
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#pricing">Pricing</a>
+            <a href="privacy.html">Privacy</a>
+            <a href="support.html">Support</a>
+            <a href="https://apps.apple.com/app/sportprice/id6761371398" target="_blank" rel="noopener" class="nav-cta">App Store</a>
+        </div>
+    </nav>
 
-<!-- Hero -->
-<section class="hero">
-    <div class="hero-badge">AI-Powered Calorie Converter</div>
-    <h1>See the <span class="gradient-text">Workout</span> in Every Bite</h1>
-    <p>Scan your food, get instant calorie estimates, and see exactly how much exercise it takes to burn it off.</p>
-    <div class="hero-cta">
-        <a href="https://apps.apple.com/app/sportprice/id6761371398" target="_blank" rel="noopener">
-            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
-                 alt="Download on the App Store" class="app-store-badge">
-        </a>
-        <a href="#how-it-works" class="cta-secondary">See How It Works</a>
-    </div>
-</section>
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-badge">
+            <div class="hero-badge-dot"></div>
+            AI-Powered Food Scanner
+        </div>
 
-<!-- Phone Mockup -->
-<section class="phone-showcase">
-    <div class="phone-frame">
-        <div class="phone-notch"></div>
-        <div class="phone-screen">
-            <div class="mock-food">&#127829;</div>
-            <div class="mock-cal">520 kcal</div>
-            <div class="mock-label">Cheeseburger</div>
-            <div class="mock-exercise-list">
-                <div class="mock-exercise-row">
-                    <span class="icon">&#127939;</span>
-                    <span class="name">Running</span>
-                    <span class="time">48 min</span>
+        <h1>
+            <span class="word" style="animation-delay:0.6s">Know </span>
+            <span class="word" style="animation-delay:0.7s">the </span><br>
+            <span class="gradient-text">
+                <span class="word" style="animation-delay:0.85s">Price </span>
+                <span class="word" style="animation-delay:0.95s">of </span>
+                <span class="word" style="animation-delay:1.05s">Every </span>
+                <span class="word" style="animation-delay:1.1s">Bite.</span>
+            </span>
+        </h1>
+
+        <p class="hero-sub">
+            Scan any food with AI, get instant calorie breakdowns, and see exactly
+            how much exercise it takes to burn it off.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="https://apps.apple.com/app/sportprice/id6761371398" target="_blank" rel="noopener" class="btn-primary">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                <span>Download on App Store</span>
+            </a>
+            <a href="#features" class="btn-secondary">
+                Explore Features
+            </a>
+        </div>
+
+        <!-- 3 Phone Mockups -->
+        <div class="hero-devices">
+            <div class="device-glow device-glow-1"></div>
+            <div class="device-glow device-glow-2"></div>
+            <div class="device-glow device-glow-3"></div>
+
+            <div class="phone-frame left">
+                <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <img src="images/scan-result.jpg" alt="AI food scan showing shrimp bowl with calories and macros">
                 </div>
-                <div class="mock-exercise-row">
-                    <span class="icon">&#128692;</span>
-                    <span class="name">Cycling</span>
-                    <span class="time">62 min</span>
+            </div>
+
+            <div class="phone-frame center" id="phoneFrame">
+                <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <img src="images/home.jpg" alt="Home screen showing energy balance of 1,237 kcal">
                 </div>
-                <div class="mock-exercise-row">
-                    <span class="icon">&#127946;</span>
-                    <span class="name">Swimming</span>
-                    <span class="time">55 min</span>
-                </div>
-                <div class="mock-exercise-row">
-                    <span class="icon">&#128694;</span>
-                    <span class="name">Walking</span>
-                    <span class="time">104 min</span>
+            </div>
+
+            <div class="phone-frame right">
+                <div class="phone-screen">
+                    <div class="phone-notch"></div>
+                    <img src="images/conversion.jpg" alt="Exercise conversion page showing 41 minutes running">
                 </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<!-- How It Works -->
-<section class="how-it-works" id="how-it-works">
-    <div class="section-header">
-        <h2>How It Works</h2>
-        <p>Three steps to understand the real cost of every meal.</p>
-    </div>
-    <div class="steps">
-        <div class="step">
-            <div class="step-number">1</div>
-            <div class="step-icon">&#128247;</div>
-            <h3>Scan Your Food</h3>
-            <p>Point your camera at any meal. Our AI identifies the food and estimates calories, protein, carbs, and fat.</p>
-        </div>
-        <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-icon">&#9889;</div>
-            <h3>See the Price</h3>
-            <p>Calories are instantly converted into exercise equivalents based on your personal profile and fitness level.</p>
-        </div>
-        <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-icon">&#128200;</div>
-            <h3>Track Progress</h3>
-            <p>Log your intake and exercise. View daily balance, weekly trends, and long-term progress on your dashboard.</p>
+    <!-- Marquee Strip -->
+    <div class="marquee-section">
+        <div class="marquee-track">
+            <div class="marquee-item"><span>&#128247;</span> AI Food Scanning</div>
+            <div class="marquee-item"><span>&#127939;</span> Exercise Conversion</div>
+            <div class="marquee-item"><span>&#128293;</span> Calorie Tracking</div>
+            <div class="marquee-item"><span>&#129367;</span> Macro Breakdown</div>
+            <div class="marquee-item"><span>&#128200;</span> Weekly Trends</div>
+            <div class="marquee-item"><span>&#128197;</span> Activity Calendar</div>
+            <div class="marquee-item"><span>&#10084;&#65039;</span> HealthKit Sync</div>
+            <div class="marquee-item"><span>&#9889;</span> Energy Balance</div>
+            <div class="marquee-item"><span>&#127947;</span> 20+ Exercises</div>
+            <div class="marquee-item"><span>&#128247;</span> AI Food Scanning</div>
+            <div class="marquee-item"><span>&#127939;</span> Exercise Conversion</div>
+            <div class="marquee-item"><span>&#128293;</span> Calorie Tracking</div>
+            <div class="marquee-item"><span>&#129367;</span> Macro Breakdown</div>
+            <div class="marquee-item"><span>&#128200;</span> Weekly Trends</div>
+            <div class="marquee-item"><span>&#128197;</span> Activity Calendar</div>
+            <div class="marquee-item"><span>&#10084;&#65039;</span> HealthKit Sync</div>
+            <div class="marquee-item"><span>&#9889;</span> Energy Balance</div>
+            <div class="marquee-item"><span>&#127947;</span> 20+ Exercises</div>
         </div>
     </div>
-</section>
 
-<!-- Features -->
-<section class="features" id="features">
-    <div class="section-header">
-        <h2>Features</h2>
-        <p>Everything you need to understand the exercise cost of food.</p>
-    </div>
-    <div class="features-grid">
-        <div class="feature-card">
-            <div class="feature-icon">&#129302;</div>
-            <h3>AI Food Scanning</h3>
-            <p>Powered by Google Gemini, our AI recognizes thousands of foods and dishes from a single photo, providing calorie and macro estimates in seconds.</p>
+    <!-- Features Bento Grid -->
+    <section id="features">
+        <div class="reveal">
+            <div class="section-label" style="color:var(--accent);">Features</div>
+            <div class="section-title">Everything you need.<br>Nothing you don't.</div>
+            <div class="section-desc">Four powerful tools that turn every meal into an instant fitness decision.</div>
         </div>
-        <div class="feature-card">
-            <div class="feature-icon">&#127947;</div>
-            <h3>Exercise Conversion</h3>
-            <p>See how long you'd need to run, cycle, swim, walk, or do other exercises to burn off what you just ate. Personalized to your body metrics.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">&#129367;</div>
-            <h3>Macro Breakdown</h3>
-            <p>Get a detailed breakdown of protein, carbohydrates, and fat for every scanned meal. Understand what you're eating at a glance.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">&#10084;&#65039;</div>
-            <h3>HealthKit Sync</h3>
-            <p>Automatically sync with Apple Health to import your workouts and body metrics, keeping everything in one place.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">&#128197;</div>
-            <h3>Calendar View</h3>
-            <p>Browse your daily intake and exercise history on a visual calendar. Quickly spot patterns and stay on track.</p>
-        </div>
-        <div class="feature-card">
-            <div class="feature-icon">&#128202;</div>
-            <h3>Trends &amp; Charts</h3>
-            <p>Weekly and monthly trend charts show your calorie intake vs. burn over time, helping you understand your habits.</p>
-        </div>
-    </div>
-</section>
 
-<!-- Pricing -->
-<section class="pricing" id="pricing">
-    <div class="section-header">
-        <h2>Simple Pricing</h2>
-        <p>Start free, upgrade when you're ready.</p>
-    </div>
-    <div class="pricing-cards">
-        <div class="pricing-card">
-            <div class="pricing-tier">Monthly</div>
-            <div class="pricing-price">$2.99</div>
-            <div class="pricing-period">per month</div>
-            <ul class="pricing-features">
-                <li>Unlimited AI food scans</li>
-                <li>Full macro breakdown</li>
-                <li>All exercise conversions</li>
-                <li>Trend charts &amp; analytics</li>
-                <li>HealthKit sync</li>
-            </ul>
+        <div class="bento-grid">
+            <div class="bento-card reveal reveal-delay-1" data-tilt>
+                <div class="card-highlight"></div>
+                <div class="card-glow" style="background:rgba(255,143,111,0.2);"></div>
+                <div class="bento-card-screenshot">
+                    <img src="images/scan-result.jpg" alt="AI food scan result">
+                </div>
+                <div class="bento-card-body">
+                    <div class="bento-card-icon" style="background:rgba(255,143,111,0.12);color:var(--accent);">&#129302;</div>
+                    <h3>AI Food Scanning</h3>
+                    <p>Point your camera at any meal. Powered by Google Gemini, our AI identifies food and estimates calories, protein, carbs, and fat in seconds.</p>
+                </div>
+            </div>
+            <div class="bento-card reveal reveal-delay-2" data-tilt>
+                <div class="card-highlight"></div>
+                <div class="card-glow" style="background:rgba(202,243,0,0.2);"></div>
+                <div class="bento-card-screenshot">
+                    <img src="images/conversion.jpg" alt="Exercise conversion">
+                </div>
+                <div class="bento-card-body">
+                    <div class="bento-card-icon" style="background:rgba(202,243,0,0.12);color:var(--accent2);">&#127939;</div>
+                    <h3>Exercise Conversion</h3>
+                    <p>See how long you'd need to run, cycle, swim, or walk to burn off what you just ate. Personalized to your body metrics using MET calculations.</p>
+                </div>
+            </div>
+            <div class="bento-card reveal reveal-delay-1" data-tilt>
+                <div class="card-highlight"></div>
+                <div class="card-glow" style="background:rgba(129,236,255,0.2);"></div>
+                <div class="bento-card-screenshot">
+                    <img src="images/home.jpg" alt="Daily energy balance">
+                </div>
+                <div class="bento-card-body">
+                    <div class="bento-card-icon" style="background:rgba(129,236,255,0.12);color:var(--accent3);">&#9889;</div>
+                    <h3>Daily Energy Balance</h3>
+                    <p>Track your daily intake vs. burn in one clear view. See your energy balance at a glance and make smarter food choices throughout the day.</p>
+                </div>
+            </div>
+            <div class="bento-card reveal reveal-delay-2" data-tilt>
+                <div class="card-highlight"></div>
+                <div class="card-glow" style="background:rgba(255,143,111,0.15);"></div>
+                <div class="bento-card-screenshot">
+                    <img src="images/chart.jpg" alt="Weekly trends and calendar">
+                </div>
+                <div class="bento-card-body">
+                    <div class="bento-card-icon" style="background:rgba(255,143,111,0.12);color:var(--accent);">&#128200;</div>
+                    <h3>Weekly Trends &amp; Calendar</h3>
+                    <p>Weekly and monthly trend charts show your calorie intake vs. burn over time. Browse your history on a visual activity calendar.</p>
+                </div>
+            </div>
         </div>
-        <div class="pricing-card featured">
-            <div class="pricing-tier">Yearly</div>
-            <div class="pricing-price">$19.99</div>
-            <div class="pricing-period">per year &middot; 7-day free trial</div>
-            <ul class="pricing-features">
-                <li>Everything in Monthly</li>
-                <li>Save over 44%</li>
-                <li>7-day free trial included</li>
-                <li>Cancel anytime</li>
-            </ul>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Statement -->
+    <div class="statement reveal-scale">
+        <h2>Calories are abstract.<br>Exercise time <em>isn't</em>.</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- How It Works -->
+    <section class="how-section" id="how-it-works">
+        <div class="reveal">
+            <div class="section-label" style="color:var(--accent2);">How It Works</div>
+            <div class="section-title">Three steps.<br>Zero guesswork.</div>
+            <div class="section-desc">From photo to fitness cost in seconds.</div>
         </div>
-    </div>
-    <p class="free-note" style="text-align:center; margin-top:24px;">Free tier includes 3 AI scans per day. No credit card required.</p>
-</section>
 
-<!-- Footer -->
-<footer>
-    <div class="footer-inner">
-        <span class="footer-copy">&copy; 2026 SportPrice. All rights reserved.</span>
-        <ul class="footer-links">
-            <li><a href="privacy.html">Privacy Policy</a></li>
-            <li><a href="support.html">Support</a></li>
-            <li><a href="https://apps.apple.com/app/sportprice/id6761371398" target="_blank" rel="noopener">App Store</a></li>
-        </ul>
-    </div>
-</footer>
+        <div class="steps-grid" style="margin-top:64px;">
+            <div class="step-card reveal reveal-delay-1">
+                <div class="step-number" style="background:rgba(255,143,111,0.12);color:var(--accent);">1</div>
+                <h3>Scan Your Food</h3>
+                <p>Point your camera at any meal. Our AI identifies the food and estimates calories, protein, carbs, and fat instantly.</p>
+            </div>
+            <div class="step-card reveal reveal-delay-2">
+                <div class="step-number" style="background:rgba(202,243,0,0.12);color:var(--accent2);">2</div>
+                <h3>See the Price</h3>
+                <p>Calories are instantly converted into exercise equivalents based on your personal profile and fitness level.</p>
+            </div>
+            <div class="step-card reveal reveal-delay-3">
+                <div class="step-number" style="background:rgba(129,236,255,0.12);color:var(--accent3);">3</div>
+                <h3>Track Progress</h3>
+                <p>Log your intake and exercise. View daily balance, weekly trends, and long-term progress on your dashboard.</p>
+            </div>
+        </div>
+    </section>
 
+    <div class="divider"></div>
+
+    <!-- Second Statement -->
+    <div class="statement reveal-scale">
+        <h2>Built for people who want to<br><em>understand</em> what they eat.</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Pricing -->
+    <section class="pricing-section" id="pricing">
+        <div class="reveal">
+            <div class="section-label" style="color:var(--accent3);">Pricing</div>
+            <div class="section-title">Simple pricing.<br>No surprises.</div>
+            <div class="section-desc">Start free, upgrade when you're ready.</div>
+        </div>
+
+        <div class="pricing-grid" style="margin-top:64px;">
+            <div class="pricing-card reveal reveal-delay-1">
+                <div class="pricing-tier">Free</div>
+                <div class="pricing-price">$0</div>
+                <div class="pricing-period">forever</div>
+                <ul class="pricing-features">
+                    <li><span class="check">&#10003;</span> 3 AI food scans per day</li>
+                    <li><span class="check">&#10003;</span> Basic macro breakdown</li>
+                    <li><span class="check">&#10003;</span> Exercise conversion</li>
+                    <li class="disabled"><span class="check">&#8212;</span> Full trend analytics</li>
+                    <li class="disabled"><span class="check">&#8212;</span> Unlimited scans</li>
+                </ul>
+                <a href="https://apps.apple.com/app/sportprice/id6761371398" target="_blank" rel="noopener" class="pricing-cta secondary">Get Started</a>
+            </div>
+            <div class="pricing-card featured reveal reveal-delay-2">
+                <div class="pricing-badge">Best Value</div>
+                <div class="pricing-tier">Pro &middot; Yearly</div>
+                <div class="pricing-price">$19.99</div>
+                <div class="pricing-period">per year &middot; 7-day free trial</div>
+                <ul class="pricing-features">
+                    <li><span class="check">&#10003;</span> Unlimited AI food scans</li>
+                    <li><span class="check">&#10003;</span> Full macro breakdown</li>
+                    <li><span class="check">&#10003;</span> All exercise conversions</li>
+                    <li><span class="check">&#10003;</span> Trend charts &amp; analytics</li>
+                    <li><span class="check">&#10003;</span> HealthKit sync</li>
+                </ul>
+                <a href="https://apps.apple.com/app/sportprice/id6761371398" target="_blank" rel="noopener" class="pricing-cta primary">Start Free Trial</a>
+            </div>
+        </div>
+
+        <p class="pricing-note reveal reveal-delay-3">Also available: $2.99/month. Cancel anytime. No credit card required for free tier.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="download">
+        <div class="reveal">
+            <h2>Ready to see the<br>real cost of food?</h2>
+            <p>Download SportPrice and start making smarter food decisions. Free to start.</p>
+        </div>
+        <div class="cta-buttons reveal reveal-delay-2">
+            <a href="https://apps.apple.com/app/sportprice/id6761371398" target="_blank" rel="noopener" class="app-store-badge">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                <div class="badge-text">
+                    <small>Download on the</small>
+                    <strong>App Store</strong>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-left">
+                <img src="images/appicon.png" alt="SportPrice">
+                <span>&copy; 2026 SportPrice. All rights reserved.</span>
+            </div>
+            <div class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="support.html">Support</a>
+                <a href="https://mogulabs.tech" target="_blank" rel="noopener">mogulabs.tech</a>
+                <a href="https://apps.apple.com/app/sportprice/id6761371398" target="_blank" rel="noopener">App Store</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            Apple, the Apple logo, iPhone, and HealthKit are trademarks of Apple Inc.
+        </div>
+    </footer>
+
+    <script>
+        // ===== Page Loader =====
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('pageLoader').classList.add('hide');
+            }, 800);
+        });
+
+        // ===== Scroll Progress Bar =====
+        const scrollProgress = document.getElementById('scrollProgress');
+        function updateProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            scrollProgress.style.width = progress + '%';
+        }
+
+        // ===== Cursor Glow =====
+        const cursorGlow = document.getElementById('cursorGlow');
+        let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursorGlow.classList.add('visible');
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursorGlow.classList.remove('visible');
+        });
+
+        function animateCursorGlow() {
+            glowX += (mouseX - glowX) * 0.08;
+            glowY += (mouseY - glowY) * 0.08;
+            cursorGlow.style.left = glowX + 'px';
+            cursorGlow.style.top = glowY + 'px';
+            requestAnimationFrame(animateCursorGlow);
+        }
+        animateCursorGlow();
+
+        // ===== Card Mouse-Follow Highlight =====
+        document.querySelectorAll('[data-tilt]').forEach(card => {
+            const highlight = card.querySelector('.card-highlight');
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                if (highlight) {
+                    highlight.style.left = x + 'px';
+                    highlight.style.top = y + 'px';
+                }
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -3;
+                const rotateY = ((x - centerX) / centerX) * 3;
+                card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-6px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = '';
+            });
+        });
+
+        // ===== Scroll Reveal =====
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => {
+            observer.observe(el);
+        });
+
+        // ===== Particles =====
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 40; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            const size = Math.random() * 3 + 1;
+            const colors = ['rgba(255,143,111,0.4)', 'rgba(202,243,0,0.3)', 'rgba(129,236,255,0.3)'];
+            particle.style.cssText = `
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                width: ${size}px;
+                height: ${size}px;
+                background: ${colors[Math.floor(Math.random() * colors.length)]};
+                box-shadow: 0 0 ${size * 3}px ${colors[Math.floor(Math.random() * colors.length)]};
+                animation: particleDrift${i % 3} ${Math.random() * 15 + 15}s linear infinite;
+                animation-delay: -${Math.random() * 15}s;
+            `;
+            particlesContainer.appendChild(particle);
+        }
+
+        const particleStyles = document.createElement('style');
+        particleStyles.textContent = `
+            @keyframes particleDrift0 {
+                0% { transform: translate(0, 0) scale(1); opacity: 0; }
+                5% { opacity: 0.6; }
+                95% { opacity: 0.6; }
+                100% { transform: translate(80px, -800px) scale(0.3); opacity: 0; }
+            }
+            @keyframes particleDrift1 {
+                0% { transform: translate(0, 0) scale(1); opacity: 0; }
+                5% { opacity: 0.4; }
+                95% { opacity: 0.4; }
+                100% { transform: translate(-60px, -700px) scale(0.2); opacity: 0; }
+            }
+            @keyframes particleDrift2 {
+                0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+                5% { opacity: 0.5; }
+                50% { transform: translate(40px, -400px) scale(1); }
+                95% { opacity: 0.5; }
+                100% { transform: translate(-30px, -900px) scale(0.3); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(particleStyles);
+
+        // ===== Navbar Hide/Show on Scroll =====
+        let lastScrollY = 0;
+        const navbar = document.getElementById('navbar');
+
+        function handleScroll() {
+            updateProgress();
+
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > 200) {
+                if (currentScrollY > lastScrollY + 5) {
+                    navbar.classList.add('nav-hidden');
+                } else if (currentScrollY < lastScrollY - 5) {
+                    navbar.classList.remove('nav-hidden');
+                }
+            } else {
+                navbar.classList.remove('nav-hidden');
+            }
+
+            navbar.style.background = currentScrollY > 50
+                ? 'rgba(10,10,12,0.92)'
+                : 'rgba(10,10,12,0.72)';
+
+            // Parallax hero devices
+            const heroDevices = document.querySelector('.hero-devices');
+            if (heroDevices && currentScrollY < window.innerHeight) {
+                const parallax = currentScrollY * 0.2;
+                const scale = 1 - currentScrollY * 0.0003;
+                const opacity = 1 - currentScrollY * 0.001;
+                heroDevices.style.transform = `translateY(${parallax}px) scale(${Math.max(scale, 0.85)})`;
+                heroDevices.style.opacity = Math.max(opacity, 0);
+            }
+
+            // Parallax for statements
+            document.querySelectorAll('.statement').forEach(statement => {
+                const rect = statement.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    const progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+                    const translateY = (progress - 0.5) * -30;
+                    statement.querySelector('h2').style.transform = `translateY(${translateY}px)`;
+                }
+            });
+
+            lastScrollY = currentScrollY;
+        }
+
+        let scrollTicking = false;
+        window.addEventListener('scroll', () => {
+            if (!scrollTicking) {
+                requestAnimationFrame(() => {
+                    handleScroll();
+                    scrollTicking = false;
+                });
+                scrollTicking = true;
+            }
+        }, { passive: true });
+
+        // ===== Smooth Scroll =====
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Close mobile menu
+                    document.getElementById('navLinks').classList.remove('open');
+                }
+            });
+        });
+
+        // ===== Mobile Menu Toggle =====
+        document.getElementById('navToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+
+        // ===== Phone 3D Tilt =====
+        const phoneFrame = document.getElementById('phoneFrame');
+        if (phoneFrame) {
+            phoneFrame.addEventListener('mousemove', (e) => {
+                const rect = phoneFrame.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                phoneFrame.style.transform = `scale(1.12) translateY(-24px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg)`;
+            });
+
+            phoneFrame.addEventListener('mouseleave', () => {
+                phoneFrame.style.transform = 'scale(1.08) translateY(-20px)';
+            });
+        }
+    </script>
 </body>
 </html>
