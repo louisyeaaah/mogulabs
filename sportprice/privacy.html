@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - SportPrice</title>
+    <meta name="description" content="SportPrice privacy policy. Learn how we handle your data, camera access, HealthKit, and AI processing.">
+    <style>
+        :root {
+            --coral: #FF8F6F;
+            --lime: #CAF300;
+            --dark-bg: #1C1C1E;
+            --dark-surface: #2C2C2E;
+            --dark-elevated: #3A3A3C;
+            --text-primary: #FFFFFF;
+            --text-secondary: #ABABAB;
+            --text-muted: #8E8E93;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(28, 28, 30, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .nav-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--coral), #FF6B45);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .nav-brand span {
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-primary);
+        }
+
+        .nav-mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        /* Content */
+        .page-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 120px 24px 80px;
+        }
+
+        .page-header {
+            margin-bottom: 48px;
+        }
+
+        .page-header h1 {
+            font-size: clamp(32px, 5vw, 44px);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .page-header .effective-date {
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        .policy-section {
+            margin-bottom: 40px;
+        }
+
+        .policy-section h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--coral);
+        }
+
+        .policy-section h3 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+
+        .policy-section p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.7;
+        }
+
+        .policy-section ul {
+            margin: 8px 0 16px 20px;
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        .policy-section ul li {
+            margin-bottom: 6px;
+            line-height: 1.6;
+        }
+
+        .highlight-box {
+            background: var(--dark-surface);
+            border-left: 3px solid var(--lime);
+            border-radius: 0 12px 12px 0;
+            padding: 16px 20px;
+            margin: 16px 0;
+        }
+
+        .highlight-box p {
+            color: var(--text-primary);
+            margin-bottom: 0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px 16px;
+            background: var(--dark-surface);
+            color: var(--text-primary);
+            font-weight: 600;
+            border-bottom: 1px solid var(--dark-elevated);
+        }
+
+        .data-table th:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .data-table th:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .data-table td {
+            padding: 10px 16px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 48px 24px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-secondary);
+        }
+
+        .footer-copy {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: rgba(28, 28, 30, 0.97);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 16px 24px;
+                gap: 12px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .nav-mobile-toggle {
+                display: block;
+            }
+
+            .data-table {
+                font-size: 13px;
+            }
+
+            .data-table th, .data-table td {
+                padding: 8px 10px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+    <div class="nav-inner">
+        <a href="index.html" class="nav-brand">
+            <div class="nav-icon">S</div>
+            <span>SportPrice</span>
+        </a>
+        <button class="nav-mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="privacy.html" class="active">Privacy</a></li>
+            <li><a href="support.html">Support</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Privacy Policy Content -->
+<main class="page-content">
+    <div class="page-header">
+        <h1>Privacy Policy</h1>
+        <p class="effective-date">Effective date: April 2, 2026</p>
+    </div>
+
+    <div class="policy-section">
+        <h2>Overview</h2>
+        <p>SportPrice ("we", "our", or "the app") is committed to protecting your privacy. This policy explains what data we collect, how we use it, and your rights regarding your information.</p>
+        <div class="highlight-box">
+            <p>SportPrice does not sell, share, or provide your personal data to any third-party advertisers or data brokers. We do not use third-party analytics or tracking SDKs.</p>
+        </div>
+    </div>
+
+    <div class="policy-section">
+        <h2>Data We Collect</h2>
+        <p>The following table summarizes the data SportPrice accesses and how it is used:</p>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Purpose</th>
+                    <th>Storage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Camera images</td>
+                    <td>AI food recognition</td>
+                    <td>Uploaded for analysis, not permanently stored on servers</td>
+                </tr>
+                <tr>
+                    <td>Food scan results</td>
+                    <td>Calorie &amp; macro logging</td>
+                    <td>On-device (SwiftData)</td>
+                </tr>
+                <tr>
+                    <td>Body metrics</td>
+                    <td>Personalized exercise calculations</td>
+                    <td>On-device (SwiftData)</td>
+                </tr>
+                <tr>
+                    <td>HealthKit data</td>
+                    <td>Import workouts, sync weight/body fat</td>
+                    <td>Apple Health (on-device)</td>
+                </tr>
+                <tr>
+                    <td>Apple ID (Sign in with Apple)</td>
+                    <td>Authentication</td>
+                    <td>Supabase Auth</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="policy-section">
+        <h2>Camera &amp; Photo Usage</h2>
+        <p>SportPrice uses your device camera solely to photograph food for AI-powered calorie analysis. Here is how we handle your images:</p>
+        <ul>
+            <li>Photos are taken only when you actively tap the scan button.</li>
+            <li>Images are uploaded to our server (Supabase Storage) for AI processing via the Google Gemini API.</li>
+            <li>Images are used only for food recognition and calorie estimation. They are not permanently stored on our servers and are subject to automatic cleanup.</li>
+            <li>We do not use your photos for training AI models, advertising, or any purpose other than providing you with food analysis results.</li>
+        </ul>
+    </div>
+
+    <div class="policy-section">
+        <h2>AI Processing</h2>
+        <p>When you scan food, the image is sent to a Supabase Edge Function that calls the Google Gemini Flash API. This process:</p>
+        <ul>
+            <li>Analyzes the food in the image and returns calorie and macro estimates.</li>
+            <li>Runs on Google's infrastructure. The image is processed in real-time and not retained by Google for model training (per Google's API data usage policies).</li>
+            <li>Returns structured results to the app, where they are stored locally on your device.</li>
+        </ul>
+    </div>
+
+    <div class="policy-section">
+        <h2>Apple HealthKit</h2>
+        <p>SportPrice integrates with Apple HealthKit with your explicit permission. We follow Apple's HealthKit guidelines strictly:</p>
+        <ul>
+            <li><strong>Read access:</strong> Workout data (type, duration, calories burned) to display your exercise history.</li>
+            <li><strong>Write access:</strong> Weight and body fat percentage, if you choose to log these through the app.</li>
+            <li>HealthKit data is never uploaded to any server. It stays entirely on your device and within the Apple Health ecosystem.</li>
+            <li>HealthKit data is never used for advertising, marketing, or shared with third parties.</li>
+        </ul>
+    </div>
+
+    <div class="policy-section">
+        <h2>Authentication</h2>
+        <p>SportPrice uses Sign in with Apple for authentication:</p>
+        <ul>
+            <li>We receive only the information Apple provides: a unique user identifier, and optionally your name and email (which Apple can anonymize via Private Relay).</li>
+            <li>Authentication tokens are managed by Supabase Auth, a trusted backend-as-a-service provider.</li>
+            <li>We do not store your Apple ID password or access any other Apple account data.</li>
+        </ul>
+    </div>
+
+    <div class="policy-section">
+        <h2>Local Data Storage</h2>
+        <p>The majority of your data in SportPrice is stored locally on your device using Apple's SwiftData framework:</p>
+        <ul>
+            <li>Food scan history, daily logs, exercise conversions, and your personal profile are stored on-device.</li>
+            <li>This data is included in your iCloud device backups if you have iCloud Backup enabled.</li>
+            <li>You can delete all local data at any time by deleting the app from your device.</li>
+        </ul>
+    </div>
+
+    <div class="policy-section">
+        <h2>Third-Party Services</h2>
+        <p>SportPrice uses the following third-party services:</p>
+        <ul>
+            <li><strong>Supabase</strong> &mdash; Backend services (authentication, image storage, edge functions). <a href="https://supabase.com/privacy" style="color: var(--coral);">Supabase Privacy Policy</a></li>
+            <li><strong>Google Gemini API</strong> &mdash; AI food recognition. Accessed via Supabase Edge Function; no direct SDK in the app. <a href="https://ai.google.dev/terms" style="color: var(--coral);">Google AI Terms</a></li>
+            <li><strong>Apple StoreKit</strong> &mdash; In-app subscription management. Handled entirely by Apple.</li>
+        </ul>
+        <div class="highlight-box">
+            <p>We do not use any third-party analytics, crash reporting, or advertising SDKs. There are no trackers in SportPrice.</p>
+        </div>
+    </div>
+
+    <div class="policy-section">
+        <h2>Children's Privacy</h2>
+        <p>SportPrice is not directed at children under 13. We do not knowingly collect personal information from children. If you believe a child under 13 has provided us with data, please contact us and we will delete it.</p>
+    </div>
+
+    <div class="policy-section">
+        <h2>Data Retention &amp; Deletion</h2>
+        <ul>
+            <li>Food scan images uploaded for AI analysis are not permanently stored on our servers.</li>
+            <li>Your authentication record in Supabase can be deleted upon request.</li>
+            <li>All on-device data is deleted when you uninstall the app.</li>
+            <li>To request deletion of any server-side data, contact us at the email below.</li>
+        </ul>
+    </div>
+
+    <div class="policy-section">
+        <h2>Changes to This Policy</h2>
+        <p>We may update this privacy policy from time to time. Changes will be posted on this page with an updated effective date. Continued use of the app after changes constitutes acceptance of the revised policy.</p>
+    </div>
+
+    <div class="policy-section">
+        <h2>Contact Us</h2>
+        <p>If you have questions about this privacy policy or your data, please contact us:</p>
+        <p style="color: var(--text-primary); font-weight: 600;">sportprice@mogulabs.tech</p>
+    </div>
+</main>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <span class="footer-copy">&copy; 2026 SportPrice. All rights reserved.</span>
+        <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="support.html">Support</a></li>
+        </ul>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SportPrice - See the Workout in Every Bite</title>
+    <meta name="description" content="SportPrice converts food calories into exercise equivalents. Scan your meal, see the workout. Available on the App Store.">
+    <style>
+        :root {
+            --coral: #FF8F6F;
+            --lime: #CAF300;
+            --dark-bg: #1C1C1E;
+            --dark-surface: #2C2C2E;
+            --dark-elevated: #3A3A3C;
+            --text-primary: #FFFFFF;
+            --text-secondary: #ABABAB;
+            --text-muted: #8E8E93;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(28, 28, 30, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .nav-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--coral), #FF6B45);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .nav-brand span {
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: -0.3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-primary);
+        }
+
+        .nav-mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        /* Hero */
+        .hero {
+            padding: 160px 24px 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(255, 143, 111, 0.12) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 100px;
+            background: rgba(202, 243, 0, 0.1);
+            border: 1px solid rgba(202, 243, 0, 0.25);
+            color: var(--lime);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 7vw, 72px);
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            line-height: 1.08;
+            max-width: 800px;
+            margin: 0 auto 24px;
+        }
+
+        .hero h1 .gradient-text {
+            background: linear-gradient(135deg, var(--coral), #FFB088);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: clamp(17px, 2.2vw, 20px);
+            color: var(--text-secondary);
+            max-width: 560px;
+            margin: 0 auto 40px;
+            line-height: 1.5;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .app-store-badge {
+            height: 54px;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .app-store-badge:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        .cta-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 14px;
+            background: var(--dark-surface);
+            border: 1px solid var(--dark-elevated);
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .cta-secondary:hover {
+            background: var(--dark-elevated);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Phone Mockup */
+        .phone-showcase {
+            padding: 40px 24px 80px;
+            text-align: center;
+        }
+
+        .phone-frame {
+            display: inline-block;
+            position: relative;
+            width: 280px;
+            height: 580px;
+            background: var(--dark-surface);
+            border-radius: 40px;
+            border: 3px solid var(--dark-elevated);
+            overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 28px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+            z-index: 2;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px 20px;
+            background: linear-gradient(180deg, var(--dark-bg) 0%, #252527 100%);
+        }
+
+        .phone-screen .mock-food {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .phone-screen .mock-cal {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--coral);
+            margin-bottom: 4px;
+        }
+
+        .phone-screen .mock-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .mock-exercise-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .mock-exercise-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 10px 14px;
+        }
+
+        .mock-exercise-row .icon {
+            font-size: 20px;
+        }
+
+        .mock-exercise-row .name {
+            flex: 1;
+            font-size: 13px;
+            color: var(--text-secondary);
+            text-align: left;
+        }
+
+        .mock-exercise-row .time {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--lime);
+        }
+
+        /* How it Works */
+        .how-it-works {
+            padding: 80px 24px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 64px;
+        }
+
+        .section-header h2 {
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+
+        .section-header p {
+            font-size: 17px;
+            color: var(--text-secondary);
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        .steps {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 40px 24px;
+            border-radius: 24px;
+            background: var(--dark-surface);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: border-color 0.3s, transform 0.3s;
+        }
+
+        .step:hover {
+            border-color: rgba(255, 143, 111, 0.3);
+            transform: translateY(-4px);
+        }
+
+        .step-number {
+            width: 48px;
+            height: 48px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .step:nth-child(1) .step-number {
+            background: rgba(255, 143, 111, 0.15);
+            color: var(--coral);
+        }
+
+        .step:nth-child(2) .step-number {
+            background: rgba(202, 243, 0, 0.15);
+            color: var(--lime);
+        }
+
+        .step:nth-child(3) .step-number {
+            background: rgba(100, 210, 255, 0.15);
+            color: #64D2FF;
+        }
+
+        .step-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .step h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .step p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Features */
+        .features {
+            padding: 80px 24px;
+        }
+
+        .features-grid {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            padding: 32px;
+            border-radius: 20px;
+            background: var(--dark-surface);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: border-color 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: rgba(255, 143, 111, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Pricing */
+        .pricing {
+            padding: 80px 24px;
+        }
+
+        .pricing-cards {
+            max-width: 800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .pricing-card {
+            padding: 36px 28px;
+            border-radius: 24px;
+            background: var(--dark-surface);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--coral);
+            position: relative;
+            background: linear-gradient(180deg, rgba(255, 143, 111, 0.08) 0%, var(--dark-surface) 100%);
+        }
+
+        .pricing-card.featured::before {
+            content: 'BEST VALUE';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--coral);
+            color: #000;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 14px;
+            border-radius: 100px;
+            letter-spacing: 0.5px;
+        }
+
+        .pricing-tier {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .pricing-price {
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .pricing-period {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        .pricing-features li {
+            font-size: 14px;
+            color: var(--text-secondary);
+            padding: 6px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pricing-features li::before {
+            content: '';
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(202, 243, 0, 0.15);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .pricing-features li::before {
+            content: '\2713';
+            font-size: 11px;
+            color: var(--lime);
+        }
+
+        .free-note {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 24px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 48px 24px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-secondary);
+        }
+
+        .footer-copy {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: rgba(28, 28, 30, 0.97);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 16px 24px;
+                gap: 12px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .nav-mobile-toggle {
+                display: block;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-cards {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+
+            .hero {
+                padding: 120px 24px 60px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+    <div class="nav-inner">
+        <a href="index.html" class="nav-brand">
+            <div class="nav-icon">S</div>
+            <span>SportPrice</span>
+        </a>
+        <button class="nav-mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+        <ul class="nav-links">
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="support.html">Support</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="hero-badge">AI-Powered Calorie Converter</div>
+    <h1>See the <span class="gradient-text">Workout</span> in Every Bite</h1>
+    <p>Scan your food, get instant calorie estimates, and see exactly how much exercise it takes to burn it off.</p>
+    <div class="hero-cta">
+        <a href="https://apps.apple.com/app/sportprice/id6761371398" target="_blank" rel="noopener">
+            <img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
+                 alt="Download on the App Store" class="app-store-badge">
+        </a>
+        <a href="#how-it-works" class="cta-secondary">See How It Works</a>
+    </div>
+</section>
+
+<!-- Phone Mockup -->
+<section class="phone-showcase">
+    <div class="phone-frame">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+            <div class="mock-food">&#127829;</div>
+            <div class="mock-cal">520 kcal</div>
+            <div class="mock-label">Cheeseburger</div>
+            <div class="mock-exercise-list">
+                <div class="mock-exercise-row">
+                    <span class="icon">&#127939;</span>
+                    <span class="name">Running</span>
+                    <span class="time">48 min</span>
+                </div>
+                <div class="mock-exercise-row">
+                    <span class="icon">&#128692;</span>
+                    <span class="name">Cycling</span>
+                    <span class="time">62 min</span>
+                </div>
+                <div class="mock-exercise-row">
+                    <span class="icon">&#127946;</span>
+                    <span class="name">Swimming</span>
+                    <span class="time">55 min</span>
+                </div>
+                <div class="mock-exercise-row">
+                    <span class="icon">&#128694;</span>
+                    <span class="name">Walking</span>
+                    <span class="time">104 min</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works" id="how-it-works">
+    <div class="section-header">
+        <h2>How It Works</h2>
+        <p>Three steps to understand the real cost of every meal.</p>
+    </div>
+    <div class="steps">
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-icon">&#128247;</div>
+            <h3>Scan Your Food</h3>
+            <p>Point your camera at any meal. Our AI identifies the food and estimates calories, protein, carbs, and fat.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-icon">&#9889;</div>
+            <h3>See the Price</h3>
+            <p>Calories are instantly converted into exercise equivalents based on your personal profile and fitness level.</p>
+        </div>
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-icon">&#128200;</div>
+            <h3>Track Progress</h3>
+            <p>Log your intake and exercise. View daily balance, weekly trends, and long-term progress on your dashboard.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+    <div class="section-header">
+        <h2>Features</h2>
+        <p>Everything you need to understand the exercise cost of food.</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon">&#129302;</div>
+            <h3>AI Food Scanning</h3>
+            <p>Powered by Google Gemini, our AI recognizes thousands of foods and dishes from a single photo, providing calorie and macro estimates in seconds.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">&#127947;</div>
+            <h3>Exercise Conversion</h3>
+            <p>See how long you'd need to run, cycle, swim, walk, or do other exercises to burn off what you just ate. Personalized to your body metrics.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">&#129367;</div>
+            <h3>Macro Breakdown</h3>
+            <p>Get a detailed breakdown of protein, carbohydrates, and fat for every scanned meal. Understand what you're eating at a glance.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">&#10084;&#65039;</div>
+            <h3>HealthKit Sync</h3>
+            <p>Automatically sync with Apple Health to import your workouts and body metrics, keeping everything in one place.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">&#128197;</div>
+            <h3>Calendar View</h3>
+            <p>Browse your daily intake and exercise history on a visual calendar. Quickly spot patterns and stay on track.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">&#128202;</div>
+            <h3>Trends &amp; Charts</h3>
+            <p>Weekly and monthly trend charts show your calorie intake vs. burn over time, helping you understand your habits.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing -->
+<section class="pricing" id="pricing">
+    <div class="section-header">
+        <h2>Simple Pricing</h2>
+        <p>Start free, upgrade when you're ready.</p>
+    </div>
+    <div class="pricing-cards">
+        <div class="pricing-card">
+            <div class="pricing-tier">Monthly</div>
+            <div class="pricing-price">$2.99</div>
+            <div class="pricing-period">per month</div>
+            <ul class="pricing-features">
+                <li>Unlimited AI food scans</li>
+                <li>Full macro breakdown</li>
+                <li>All exercise conversions</li>
+                <li>Trend charts &amp; analytics</li>
+                <li>HealthKit sync</li>
+            </ul>
+        </div>
+        <div class="pricing-card featured">
+            <div class="pricing-tier">Yearly</div>
+            <div class="pricing-price">$19.99</div>
+            <div class="pricing-period">per year &middot; 7-day free trial</div>
+            <ul class="pricing-features">
+                <li>Everything in Monthly</li>
+                <li>Save over 44%</li>
+                <li>7-day free trial included</li>
+                <li>Cancel anytime</li>
+            </ul>
+        </div>
+    </div>
+    <p class="free-note" style="text-align:center; margin-top:24px;">Free tier includes 3 AI scans per day. No credit card required.</p>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <span class="footer-copy">&copy; 2026 SportPrice. All rights reserved.</span>
+        <ul class="footer-links">
+            <li><a href="privacy.html">Privacy Policy</a></li>
+            <li><a href="support.html">Support</a></li>
+            <li><a href="https://apps.apple.com/app/sportprice/id6761371398" target="_blank" rel="noopener">App Store</a></li>
+        </ul>
+    </div>
+</footer>
+
+</body>
+</html>
